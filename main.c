@@ -1,5 +1,6 @@
 #include <stdlib.h>
-#include <mlx.h>
+#include <math.h>
+#include "mlx.h"
 
 // general events
 enum
@@ -36,6 +37,9 @@ int		endian;
 
 double	py;
 double	px;
+double	pdx;
+double	pdy;
+double	pa;
 
 int		display(void);
 void	clear_display(void);
@@ -44,6 +48,7 @@ int		key_hook(int key);
 void	draw_2d_map(void);
 void	draw_player(void);
 
+void	draw_line(int x0, int y0, int x1, int y1, int color);
 void	draw_square(int x, int y, int size, int color);
 void	pixel_put_image(int x, int y, int color);
 
@@ -72,6 +77,9 @@ int	main(void)
 	buf = mlx_get_data_addr(img, &bpp, &l_len, &endian);
 	px = 300;
 	py = 300;
+	pa = 0;
+	pdx = cos(pa) * 5;
+	pdy = sin(pa) * 5;
 	mlx_loop_hook(mlx, display, NULL);
 	mlx_hook(win, ON_KEYDOWN, 0, key_hook, NULL);
 	mlx_loop(mlx);
@@ -110,13 +118,31 @@ void	clear_display(void)
 int	key_hook(int key)
 {
 	if (key == KEY_A)
-		px -= 5;
+	{
+		pa -= 0.1;
+		if (pa < 0)
+			pa += 2 * M_PI;
+		pdx = cos(pa) * 5;
+		pdy = sin(pa) * 5;
+	}
 	if (key == KEY_D)
-		px += 5;
+	{
+		pa += 0.1;
+		if (pa > 2 * M_PI)
+			pa -= 2 * M_PI;
+		pdx = cos(pa) * 5;
+		pdy = sin(pa) * 5;
+	}
 	if (key == KEY_W)
-		py -= 5;
+	{
+		px += pdx;
+		py += pdy;
+	}
 	if (key == KEY_S)
-		py += 5;
+	{
+		px -= pdx;
+		py -= pdy;
+	}
 	display();
 	return (0);
 }
@@ -139,19 +165,37 @@ void	draw_2d_map(void)
 				color = 0xFFFFFF;
 			else
 				color = 0x000000;
-			// TODO
+			xo = x * mapS;
+			yo = y * mapS;
+			draw_square(xo + 1, yo + 1, mapS - 1, color);
 			x++;
 		}
 		y++;
 	}
-	(void)xo;
-	(void)yo;
-	(void)color;
 }
 
 void	draw_player(void)
 {
-	draw_square(px - 4, py - 4, 8, 0xFFFF00);
+	int color = 0xFFFF00;
+	draw_square(px - 4, py - 4, 8, color);
+	draw_line(px, py, px + pdx * 5, py + pdy * 5, color);
+}
+
+void draw_line(int x0, int y0, int x1, int y1, int color)
+{
+    int dx = abs(x1 - x0);
+    int dy = abs(y1 - y0);
+    int sx = (x0 < x1) ? 1 : -1;
+    int sy = (y0 < y1) ? 1 : -1;
+    int err = dx - dy;
+
+    while (1) {
+		pixel_put_image(x0, y0, color);
+        if (x0 == x1 && y0 == y1) break;       
+        int e2 = 2 * err;
+        if (e2 > -dy) { err -= dy; x0 += sx; }
+        if (e2 < dx) { err += dx; y0 += sy; }
+    }
 }
 
 void	draw_square(int x, int y, int size, int color)
