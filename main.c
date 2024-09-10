@@ -46,6 +46,7 @@ void	clear_display(void);
 int		key_hook(int key);
 
 void	draw_2d_map(void);
+void	draw_3d_rays(void);
 void	draw_player(void);
 
 void	draw_line(int x0, int y0, int x1, int y1, int color);
@@ -67,6 +68,20 @@ int		map[] = {
 	1, 1, 1, 1, 1, 1, 1, 1
 };
 
+double	deg_to_rad(double degrees)
+{
+	return (degrees * M_PI / 180.0);
+}
+
+double	normalize_angle(double angle)
+{
+	if (angle >= 360)
+		angle -= 360;
+	if (angle < 0)
+		angle += 360;
+	return (angle);
+}
+
 int	main(void)
 {
 	w_width = 1024;
@@ -78,9 +93,9 @@ int	main(void)
 	px = 300;
 	py = 300;
 	pa = 0;
-	pdx = cos(pa) * 5;
-	pdy = sin(pa) * 5;
-	mlx_loop_hook(mlx, display, NULL);
+	pdx = cos(deg_to_rad(pa));
+	pdy = sin(deg_to_rad(pa));
+	display();
 	mlx_hook(win, ON_KEYDOWN, 0, key_hook, NULL);
 	mlx_loop(mlx);
 	(void)buf;
@@ -92,6 +107,7 @@ int	display(void)
 	mlx_clear_window(mlx, win);
 	clear_display();
 	draw_2d_map();
+	draw_3d_rays();
 	draw_player();
 	mlx_put_image_to_window(mlx, win, img, 0, 0);
 	return (0);
@@ -119,19 +135,15 @@ int	key_hook(int key)
 {
 	if (key == KEY_A)
 	{
-		pa -= 0.1;
-		if (pa < 0)
-			pa += 2 * M_PI;
-		pdx = cos(pa) * 5;
-		pdy = sin(pa) * 5;
+		pa = normalize_angle(pa + 5);
+		pdx = cos(deg_to_rad(pa));
+		pdy = -sin(deg_to_rad(pa));
 	}
 	if (key == KEY_D)
 	{
-		pa += 0.1;
-		if (pa > 2 * M_PI)
-			pa -= 2 * M_PI;
-		pdx = cos(pa) * 5;
-		pdy = sin(pa) * 5;
+		pa = normalize_angle(pa - 5);
+		pdx = cos(deg_to_rad(pa));
+		pdy = -sin(deg_to_rad(pa));
 	}
 	if (key == KEY_W)
 	{
@@ -174,11 +186,137 @@ void	draw_2d_map(void)
 	}
 }
 
+void draw_3d_rays(void)
+{
+	int	r;
+	int	mx;
+	int	my;
+	int	mp;
+	int	dof;
+
+	double	vx;
+	double	vy;
+	double	rx;
+	double	ry;
+	double	ra;
+	double	xo;
+	double	yo;
+	double	disV;
+	double	disH;
+
+	ra = normalize_angle(pa + 30);
+	for(r=0;r<480;r++)
+	{
+		// vertical line check
+		dof = 0;
+		disV = 100000;
+		double Tan = tan(deg_to_rad(ra));
+		if(cos(deg_to_rad(ra)) > 0.001)
+		{
+			rx = (((int)px>>6)<<6) + 64;
+			ry = (px - rx) * Tan + py;
+			xo = 64;
+			yo = -xo * Tan;
+		}
+		else if (cos(deg_to_rad(ra)) < -0.001)
+		{
+			rx = (((int)px>>6)<<6) - 0.0001;
+			ry = (px - rx) * Tan + py;
+			xo = -64;
+			yo = -xo * Tan;
+		}
+		else
+		{
+			rx = px;
+			ry = py;
+			dof = 8;
+		}
+		while(dof<8)
+		{
+			mx = (int)(rx)>>6;
+			my = (int)(ry)>>6;
+			mp = my * mapX + mx;
+			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			{
+				dof = 8;
+				disV = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+			}
+			else
+			{
+				rx += xo;
+				ry += yo;
+				dof += 1;
+			}
+		}
+		vx = rx;
+		vy = ry;
+
+		// horizontal line check
+		dof = 0;
+		disH = 100000;
+		Tan = 1.0 / Tan;
+		if (sin(deg_to_rad(ra)) > 0.001)
+		{
+			ry = (((int)py>>6)<<6) - 0.0001;
+			rx = (py - ry) * Tan + px;
+			yo = -64;
+			xo = -yo * Tan;
+		}
+		else if (sin(deg_to_rad(ra)) < -0.001)
+		{
+			ry = (((int)py>>6)<<6) + 64;
+			rx = (py - ry) * Tan + px;
+			yo = 64;
+			xo = -yo * Tan;
+		}
+		else
+		{
+			rx = px;
+			ry = py;
+			dof = 8;
+		}
+		while(dof < 8)
+		{
+			mx = (int)(rx)>>6;
+			my = (int)(ry)>>6;
+			mp = my * mapX + mx;
+			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			{
+				dof = 8;
+				disH = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+			}
+			else
+			{
+				rx += xo;
+				ry += yo;
+				dof += 1;
+			}
+		}
+		if (disV < disH)
+		{
+			rx = vx;
+			ry = vy;
+			disH = disV;
+		}
+		draw_line(px, py, rx, ry, 0xFF0000);
+
+		int	ca = normalize_angle(pa - ra);
+		disH = disH * cos(deg_to_rad(ca));
+		int	lineH = mapS * w_height / disH;
+		if (lineH > w_height)
+			lineH = w_height;
+		int	lineOff = (w_height>>1) - (lineH>>1);                                               //line offset
+
+		draw_line(r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
+		ra = normalize_angle(ra - 60.0 / 480.0);                                                        //go to next ray
+	}
+}
+
 void	draw_player(void)
 {
 	int color = 0xFFFF00;
 	draw_square(px - 4, py - 4, 8, color);
-	draw_line(px, py, px + pdx * 5, py + pdy * 5, color);
+	draw_line(px, py, px + pdx * 20, py + pdy * 20, color);
 }
 
 void draw_line(int x0, int y0, int x1, int y1, int color)

@@ -12,7 +12,7 @@ LIBMLX_LINK := -L$(LIBMLX_PATH) -lmlx -framework OpenGL -framework AppKit
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBMLX)
-	$(CC) -fsanitize=address -g3 $(CFLAGS) $(OBJ) -lm $(LIBMLX_LINK) -o $@
+	$(CC) $(CFLAGS) $(OBJ) -lm $(LIBMLX_LINK) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -I$(LIBMLX_PATH) -c $< -o $@
