@@ -6,16 +6,18 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 13:10:06 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/10 14:59:11 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#include <stdlib.h>
-#include <math.h>
-#include "mlx.h"
+# include <stdlib.h>
+# include <math.h>
+# include "mlx.h"
+
+# define SPEED 8
 
 // general events
 enum
@@ -71,5 +73,6 @@ void	draw_3d_rays(t_display *display);
 void	draw_player(t_display *display);
 void	draw_square(t_display *display, int x, int y, int size, int color);
 void	draw_2d_map(t_display *display);
+int		update_xy(t_display *display, double new_x, double new_y);
 
 #endif
