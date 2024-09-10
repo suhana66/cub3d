@@ -2,7 +2,6 @@
 
 int		mapX = 8;
 int		mapY = 8;
-int		mapS = 64;
 
 int		map[] = {
 	1, 1, 1, 1, 1, 1, 1, 1,
@@ -134,7 +133,14 @@ int	key_hook(int key, t_display *display)
 
 int	update_xy(t_display *display, double new_x, double new_y)
 {
-	if (if_in_map(new_x, new_y))
+	int	map_x;
+	int	map_y;
+	int	map_pos;
+
+	map_x = (int)new_x / CUBE_SIZE;
+	map_y = (int)new_y / CUBE_SIZE;
+	map_pos = map_y * mapX + map_x;
+	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 0)
 	{
 		display->player.x = new_x;
 		display->player.y = new_y;
@@ -161,9 +167,9 @@ void	draw_2d_map(t_display *display)
 				color = 0xFFFFFF;
 			else
 				color = 0x000000;
-			xo = x * mapS;
-			yo = y * mapS;
-			draw_square(display, xo + 1, yo + 1, mapS - 1, color);
+			xo = x * CUBE_SIZE;
+			yo = y * CUBE_SIZE;
+			draw_square(display, xo + 1, yo + 1, CUBE_SIZE - 1, color);
 			x++;
 		}
 		y++;
@@ -172,135 +178,109 @@ void	draw_2d_map(t_display *display)
 
 void	draw_3d_rays(t_display *display)
 {
-	int	r;
+	t_coord	ray;
+	int		r;
+	double	temp_x;
+	double	temp_y;
+	double	dist_v;
+	double	dist_h;
 
-	double	vx;
-	double	vy;
-	double	disV;
-	double	disH;
+	int		line_height;
+	int		line_offset;
 
-	t_coord		ray;
-
-	ray.a = normalize_angle(display->player.a + 30);
+	ray.a = normalize_angle(display->player.a + FOV / 2.0);
 	r = 0;
 	while (r < 480)
 	{
-		disV = vertical_line_check(&display->player, &ray);
-		vx = ray.x;
-		vy = ray.y;
+		dist_v = vertical_line_check(&display->player, &ray);
+		temp_x = ray.x;
+		temp_y = ray.y;
 
-		disH = horizontal_line_check(&display->player, &ray);
-		if (disV < disH)
+		dist_h = horizontal_line_check(&display->player, &ray);
+		if (dist_v < dist_h)
 		{
-			ray.x = vx;
-			ray.y = vy;
-			disH = disV;
+			ray.x = temp_x;
+			ray.y = temp_y;
+			dist_h = dist_v;
 		}
 		draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
 
-		int	ca = normalize_angle(display->player.a - ray.a);
-		disH = disH * cos(deg_to_rad(ca));
-		int	lineH = mapS * WIN_HEIGHT / disH;
-		if (lineH >= WIN_HEIGHT)
-			lineH = WIN_HEIGHT - 1;
-		int	lineOff = (WIN_HEIGHT>>1) - (lineH>>1);
-
-		draw_line(display, r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
-		ray.a = normalize_angle(ray.a - 60.0 / 480.0);
+		dist_h = dist_h * cos(deg_to_rad(normalize_angle(display->player.a - ray.a)));
+		line_height = CUBE_SIZE * WIN_HEIGHT / dist_h;
+		if (line_height >= WIN_HEIGHT)
+			line_height = WIN_HEIGHT - 1;
+		line_offset = WIN_HEIGHT / 2 - line_height / 2;
+		draw_line(display, r + 530, line_offset, r + 530, line_offset + line_height, 0x00FF00);
+		
+		ray.a = normalize_angle(ray.a - (double)FOV / 480);
 		r++;
 	}
 }
 
 double	horizontal_line_check(t_coord *player, t_coord *ray)
 {
-	// horizontal line check
-	double Tan = 1.0 / tan(deg_to_rad(ray->a));
+	double trig_ra = 1.0 / tan(deg_to_rad(ray->a));
 	ray->x = player->x;
 	ray->y = player->y;
 	if (sin(deg_to_rad(ray->a)) > 0.001)
 	{
-		ray->y = (((int)player->y>>6)<<6) - 0.0001;
-		ray->dy = -64;
+		ray->y = (int)player->y / CUBE_SIZE * CUBE_SIZE - 0.0001;
+		ray->dy = -CUBE_SIZE;
 	}
 	else if (sin(deg_to_rad(ray->a)) < -0.001)
 	{
-		ray->y = (((int)player->y>>6)<<6) + 64;
-		ray->dy = 64;
+		ray->y = (int)player->y / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
+		ray->dy = CUBE_SIZE;
 	}
 	else
 		return (INFINITY);
-	ray->x = (player->y - ray->y) * Tan + player->x;
-	ray->dx = -ray->dy * Tan;
+	ray->x = (player->y - ray->y) * trig_ra + player->x;
+	ray->dx = -ray->dy * trig_ra;
 	return (calc_dist(player, ray));
 }
 
 double	vertical_line_check(t_coord *player, t_coord *ray)
 {
-	double Tan = tan(deg_to_rad(ray->a));
+	double trig_ra = tan(deg_to_rad(ray->a));
 	ray->x = player->x;
 	ray->y = player->y;
 	if(cos(deg_to_rad(ray->a)) > 0.001)
 	{
-		ray->x = (((int)player->x>>6)<<6) + 64;
-		ray->dx = 64;
+		ray->x = (int)player->x / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
+		ray->dx = CUBE_SIZE;
 	}
 	else if (cos(deg_to_rad(ray->a)) < -0.001)
 	{
-		ray->x = (((int)player->x>>6)<<6) - 0.0001;
-		ray->dx = -64;
+		ray->x = (int)player->x / CUBE_SIZE * CUBE_SIZE - 0.0001;
+		ray->dx = -CUBE_SIZE;
 	}
 	else
 		return (INFINITY);
-	ray->y = (player->x - ray->x) * Tan + player->y;
-	ray->dy = -ray->dx * Tan;
+	ray->y = (player->x - ray->x) * trig_ra + player->y;
+	ray->dy = -ray->dx * trig_ra;
 	return (calc_dist(player, ray));
 }
 
 double	calc_dist(t_coord *player, t_coord *ray)
 {
-	int map_x = (int)ray->x>>6;
-	int map_y = (int)ray->y>>6;
-	int map_pos = map_y * mapX + map_x;
-	while(map_pos >= 0 && map_pos < mapX * mapY)
+	int	map_x;
+	int	map_y;
+	int	map_pos;
+
+	while (1)
 	{
+		map_x = (int)ray->x / CUBE_SIZE;
+		map_y = (int)ray->y / CUBE_SIZE;
+		map_pos = map_y * mapX + map_x;
+		if (map_pos < 0 || map_pos >= mapX * mapY)
+			break ;
 		if (map[map_pos] == 1)
 			return (cos(deg_to_rad(ray->a)) * (ray->x - player->x)
 				- sin(deg_to_rad(ray->a)) * (ray->y - player->y));
 		ray->x += ray->dx;
 		ray->y += ray->dy;
-		map_x = (int)ray->x>>6;
-		map_y = (int)ray->y>>6;
-		map_pos = map_y * mapX + map_x;
 	}
 	return (INFINITY);
-}
-
-int	if_wall(double x, double y)
-{
-	int	map_x;
-	int	map_y;
-	int	map_pos;
-
-	map_x = (int)x>>6;
-	map_y = (int)y>>6;
-	map_pos = map_y * mapX + map_x;
-	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 1)
-		return (1);
-	return (0);
-}
-
-int	if_in_map(double x, double y)
-{
-	int	map_x;
-	int	map_y;
-	int	map_pos;
-
-	map_x = (int)x>>6;
-	map_y = (int)y>>6;
-	map_pos = map_y * mapX + map_x;
-	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 0)
-		return (1);
-	return (0);
 }
 
 void	draw_player(t_display *display)

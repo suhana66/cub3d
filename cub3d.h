@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 17:04:29 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/10 18:09:44 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 # define WIN_WIDTH 1024
 # define WIN_HEIGHT 512
 # define WIN_TITLE "cub3d"
+
+# define CUBE_SIZE 64
+# define FOV 60
 # define SPEED 8
 
 // general events
@@ -78,8 +81,6 @@ void	draw_3d_rays(t_display *display);
 double	horizontal_line_check(t_coord *player, t_coord *ray);
 double	vertical_line_check(t_coord *player, t_coord *ray);
 double	calc_dist(t_coord *player, t_coord *ray);
-int		if_wall(double x, double y);
-int		if_in_map(double x, double y);
 void	draw_player(t_display *display);
 void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color);
 void	draw_square(t_display *display, int x, int y, int size, int color);
