@@ -134,10 +134,7 @@ int	key_hook(int key, t_display *display)
 
 int	update_xy(t_display *display, double new_x, double new_y)
 {
-	int mx = (int)(new_x)>>6;
-	int my = (int)(new_y)>>6;
-	int mp = my * mapX + mx;
-	if (mp > 0 && mp < mapX * mapY && map[mp] != 1)
+	if (if_in_map(new_x, new_y))
 	{
 		display->player.x = new_x;
 		display->player.y = new_y;
@@ -176,9 +173,6 @@ void	draw_2d_map(t_display *display)
 void	draw_3d_rays(t_display *display)
 {
 	int	r;
-	int	mx;
-	int	my;
-	int	mp;
 	int	dof;
 
 	double	vx;
@@ -216,12 +210,9 @@ void	draw_3d_rays(t_display *display)
 			ray.y = display->player.y;
 			dof = 8;
 		}
-		while(dof<8)
+		while(dof < 8)
 		{
-			mx = (int)(ray.x)>>6;
-			my = (int)(ray.y)>>6;
-			mp = my * mapX + mx;
-			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			if (if_wall(ray.x, ray.y))
 			{
 				dof = 8;
 				disV = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
@@ -262,10 +253,7 @@ void	draw_3d_rays(t_display *display)
 		}
 		while(dof < 8)
 		{
-			mx = (int)(ray.x)>>6;
-			my = (int)(ray.y)>>6;
-			mp = my * mapX + mx;
-			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
+			if (if_wall(ray.x, ray.y))
 			{
 				dof = 8;
 				disH = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
@@ -296,6 +284,34 @@ void	draw_3d_rays(t_display *display)
 		ray.a = normalize_angle(ray.a - 60.0 / 480.0);
 		r++;
 	}
+}
+
+int	if_wall(double x, double y)
+{
+	int	map_x;
+	int	map_y;
+	int	map_pos;
+
+	map_x = (int)x>>6;
+	map_y = (int)y>>6;
+	map_pos = map_y * mapX + map_x;
+	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 1)
+		return (1);
+	return (0);
+}
+
+int	if_in_map(double x, double y)
+{
+	int	map_x;
+	int	map_y;
+	int	map_pos;
+
+	map_x = (int)x>>6;
+	map_y = (int)y>>6;
+	map_pos = map_y * mapX + map_x;
+	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 0)
+		return (1);
+	return (0);
 }
 
 void	draw_player(t_display *display)
