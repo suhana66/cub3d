@@ -1,9 +1,5 @@
 #include "cub3d.h"
 
-int		w_width = 1024;
-int		w_height = 512;
-char	*w_title = "cub3d";
-
 int		mapX = 8;
 int		mapY = 8;
 int		mapS = 64;
@@ -43,10 +39,10 @@ int	mlx_setup(t_display *display)
 	display->img = NULL;
 	if (!display->mlx)
 		return (1); // error message
-	display->win = mlx_new_window(display->mlx, w_width, w_height, w_title);
+	display->win = mlx_new_window(display->mlx, WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
 	if (!display->win)
 		return (2); // error message
-	display->img = mlx_new_image(display->mlx, w_width, w_height);
+	display->img = mlx_new_image(display->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!display->img)
 		return (3); // error message
 	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
@@ -84,10 +80,10 @@ void	clear_display(t_display *display)
 	int	j;
 
 	i = 0;
-	while (i < w_width)
+	while (i < WIN_WIDTH)
 	{
 		j = 0;
-		while (j < w_height)
+		while (j < WIN_HEIGHT)
 		{
 			pixel_put_image(display, i, j, 0x4C4C4C);
 			j++;
@@ -291,10 +287,10 @@ void	draw_3d_rays(t_display *display)
 
 		int	ca = normalize_angle(display->player.a - ray.a);
 		disH = disH * cos(deg_to_rad(ca));
-		int	lineH = mapS * w_height / disH;
-		if (lineH > w_height)
-			lineH = w_height;
-		int	lineOff = (w_height>>1) - (lineH>>1);
+		int	lineH = mapS * WIN_HEIGHT / disH;
+		if (lineH >= WIN_HEIGHT)
+			lineH = WIN_HEIGHT - 1;
+		int	lineOff = (WIN_HEIGHT>>1) - (lineH>>1);
 
 		draw_line(display, r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
 		ray.a = normalize_angle(ray.a - 60.0 / 480.0);

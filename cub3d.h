@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 15:21:16 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/10 15:32:09 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <math.h>
 # include "mlx.h"
 
+# define WIN_WIDTH 1024
+# define WIN_HEIGHT 512
+# define WIN_TITLE "cub3d"
 # define SPEED 8
 
 // general events
