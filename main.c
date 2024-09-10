@@ -1,34 +1,43 @@
 #include "cub3d.h"
 
-int		mapX = 8;
-int		mapY = 8;
+// int		mapX = 8;
+// int		mapY = 8;
 
-int		map[] = {
-	1, 1, 1, 1, 1, 1, 1, 1,
-	1, 0, 1, 0, 0, 0, 0, 1,
-	1, 0, 1, 0, 0, 0, 0, 1,
-	1, 0, 1, 0, 0, 0, 0, 1,
-	1, 0, 0, 0, 0, 0, 0, 1,
-	1, 0, 0, 0, 0, 1, 0, 1,
-	1, 0, 0, 0, 0, 0, 0, 1,
-	1, 1, 1, 1, 1, 1, 1, 1
-};
+// int		map[] = {
+// 	1, 1, 1, 1, 1, 1, 1, 1,
+// 	1, 0, 1, 0, 0, 0, 0, 1,
+// 	1, 0, 1, 0, 0, 0, 0, 1,
+// 	1, 0, 1, 0, 0, 0, 0, 1,
+// 	1, 0, 0, 0, 0, 0, 0, 1,
+// 	1, 0, 0, 0, 0, 1, 0, 1,
+// 	1, 0, 0, 0, 0, 0, 0, 1,
+// 	1, 1, 1, 1, 1, 1, 1, 1
+// };
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	t_display	display;
 
-	display.exit_code = mlx_setup(&display);
-	if (display.exit_code)
-		quit_display(&display);
-	display.player.x = 300;
-	display.player.y = 300;
-	display.player.a = 0;
-	display.player.dx = cos(deg_to_rad(display.player.a));
-	display.player.dy = -sin(deg_to_rad(display.player.a));
+	init_info(&display);
+	parse_input(argc, argv, &display);
+	mlx_setup(&display);
 	render_display(&display);
 	mlx_loop(display.mlx);
-	return (0);
+	free_exit(NULL, &display, 0);
+}
+
+void	init_info(t_display *display)
+{
+	display->n_image = NULL;
+	display->e_image = NULL;
+	display->s_image = NULL;
+	display->w_image = NULL;
+	display->map = NULL;
+	display->c = -1;
+	display->f = -1;
+	display->player.x = -1;
+	display->player.y = -1;
+	display->player.a = -1;
 }
 
 int	mlx_setup(t_display *display)
@@ -37,13 +46,13 @@ int	mlx_setup(t_display *display)
 	display->win = NULL;
 	display->img = NULL;
 	if (!display->mlx)
-		return (1); // error message
+		free_exit(NULL, display, 1); // error message
 	display->win = mlx_new_window(display->mlx, WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
 	if (!display->win)
-		return (2); // error message
+		free_exit(NULL, display, 2); // error message
 	display->img = mlx_new_image(display->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!display->img)
-		return (3); // error message
+		free_exit(NULL, display, 3); // error message
 	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
 	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
 	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
@@ -52,14 +61,7 @@ int	mlx_setup(t_display *display)
 
 void	quit_display(t_display *display)
 {
-	if (!display)
-		return ;
-	if (display->img)
-		mlx_destroy_image(display->mlx, display->img);
-	if (display->win)
-		mlx_destroy_window(display->mlx, display->win);
-	free(display->mlx);
-	exit(display->exit_code);
+	free_exit(NULL, display, 0);
 }
 
 int	render_display(t_display *display)
@@ -135,12 +137,14 @@ int	update_xy(t_display *display, double new_x, double new_y)
 {
 	int	map_x;
 	int	map_y;
-	int	map_pos;
 
 	map_x = (int)new_x / CUBE_SIZE;
 	map_y = (int)new_y / CUBE_SIZE;
-	map_pos = map_y * mapX + map_x;
-	if (map_pos >= 0 && map_pos < mapX * mapY && map[map_pos] == 0)
+	if (map_x >= 0 && map_y >= 0
+		&& map_y < display->map_height
+		&& map_x < (int)ft_strlen(display->map[map_y])
+		&& (display->map[map_y][map_x] == '0'
+		|| ft_strchr("NESW", display->map[map_y][map_x])))
 	{
 		display->player.x = new_x;
 		display->player.y = new_y;
@@ -158,12 +162,12 @@ void	draw_2d_map(t_display *display)
 	int	color;
 
 	y = 0;
-	while (y < mapY)
+	while (y < display->map_height)
 	{
 		x = 0;
-		while (x < mapX)
+		while (x < (int)ft_strlen(display->map[y]))
 		{
-			if (map[y * mapX + x] == 1)
+			if (display->map[y][x] == '1')
 				color = 0xFFFFFF;
 			else
 				color = 0x000000;
@@ -192,11 +196,11 @@ void	draw_3d_rays(t_display *display)
 	r = 0;
 	while (r < 480)
 	{
-		dist_v = vertical_line_check(&display->player, &ray);
+		dist_v = vertical_line_check(display->player, display->map, display->map_height, &ray);
 		temp_x = ray.x;
 		temp_y = ray.y;
 
-		dist_h = horizontal_line_check(&display->player, &ray);
+		dist_h = horizontal_line_check(display->player, display->map, display->map_height, &ray);
 		if (dist_v < dist_h)
 		{
 			ray.x = temp_x;
@@ -217,66 +221,66 @@ void	draw_3d_rays(t_display *display)
 	}
 }
 
-double	horizontal_line_check(t_coord *player, t_coord *ray)
+double	horizontal_line_check(t_coord player, char **map, int map_height, t_coord *ray)
 {
 	double trig_ra = 1.0 / tan(deg_to_rad(ray->a));
-	ray->x = player->x;
-	ray->y = player->y;
+	ray->x = player.x;
+	ray->y = player.y;
 	if (sin(deg_to_rad(ray->a)) > 0.001)
 	{
-		ray->y = (int)player->y / CUBE_SIZE * CUBE_SIZE - 0.0001;
+		ray->y = (int)player.y / CUBE_SIZE * CUBE_SIZE - 0.0001;
 		ray->dy = -CUBE_SIZE;
 	}
 	else if (sin(deg_to_rad(ray->a)) < -0.001)
 	{
-		ray->y = (int)player->y / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
+		ray->y = (int)player.y / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
 		ray->dy = CUBE_SIZE;
 	}
 	else
 		return (INFINITY);
-	ray->x = (player->y - ray->y) * trig_ra + player->x;
+	ray->x = (player.y - ray->y) * trig_ra + player.x;
 	ray->dx = -ray->dy * trig_ra;
-	return (calc_dist(player, ray));
+	return (calc_dist(player, map, map_height, ray));
 }
 
-double	vertical_line_check(t_coord *player, t_coord *ray)
+double	vertical_line_check(t_coord player, char **map, int map_height, t_coord *ray)
 {
 	double trig_ra = tan(deg_to_rad(ray->a));
-	ray->x = player->x;
-	ray->y = player->y;
+	ray->x = player.x;
+	ray->y = player.y;
 	if(cos(deg_to_rad(ray->a)) > 0.001)
 	{
-		ray->x = (int)player->x / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
+		ray->x = (int)player.x / CUBE_SIZE * CUBE_SIZE + CUBE_SIZE;
 		ray->dx = CUBE_SIZE;
 	}
 	else if (cos(deg_to_rad(ray->a)) < -0.001)
 	{
-		ray->x = (int)player->x / CUBE_SIZE * CUBE_SIZE - 0.0001;
+		ray->x = (int)player.x / CUBE_SIZE * CUBE_SIZE - 0.0001;
 		ray->dx = -CUBE_SIZE;
 	}
 	else
 		return (INFINITY);
-	ray->y = (player->x - ray->x) * trig_ra + player->y;
+	ray->y = (player.x - ray->x) * trig_ra + player.y;
 	ray->dy = -ray->dx * trig_ra;
-	return (calc_dist(player, ray));
+	return (calc_dist(player, map, map_height, ray));
 }
 
-double	calc_dist(t_coord *player, t_coord *ray)
+double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray)
 {
 	int	map_x;
 	int	map_y;
-	int	map_pos;
 
 	while (1)
 	{
 		map_x = (int)ray->x / CUBE_SIZE;
 		map_y = (int)ray->y / CUBE_SIZE;
-		map_pos = map_y * mapX + map_x;
-		if (map_pos < 0 || map_pos >= mapX * mapY)
+		if (map_x < 0 || map_y < 0
+			|| map_y >= map_height
+			|| map_x >= (int)ft_strlen(map[map_y]))
 			break ;
-		if (map[map_pos] == 1)
-			return (cos(deg_to_rad(ray->a)) * (ray->x - player->x)
-				- sin(deg_to_rad(ray->a)) * (ray->y - player->y));
+		if (map[map_y][map_x] == '1')
+			return (cos(deg_to_rad(ray->a)) * (ray->x - player.x)
+				- sin(deg_to_rad(ray->a)) * (ray->y - player.y));
 		ray->x += ray->dx;
 		ray->y += ray->dy;
 	}
