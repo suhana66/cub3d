@@ -160,111 +160,108 @@ void	draw_3d_rays(t_display *display)
 
 	double	vx;
 	double	vy;
-	double	rx;
-	double	ry;
-	double	ra;
-	double	xo;
-	double	yo;
 	double	disV;
 	double	disH;
 
-	ra = normalize_angle(display->player.a + 30);
+	t_coord		ray;
+
+	ray.a = normalize_angle(display->player.a + 30);
 	for(r=0;r<480;r++)
 	{
 		// vertical line check
 		dof = 0;
 		disV = 100000;
-		double Tan = tan(deg_to_rad(ra));
-		if(cos(deg_to_rad(ra)) > 0.001)
+		double Tan = tan(deg_to_rad(ray.a));
+		if(cos(deg_to_rad(ray.a)) > 0.001)
 		{
-			rx = (((int)display->player.x>>6)<<6) + 64;
-			ry = (display->player.x - rx) * Tan + display->player.y;
-			xo = 64;
-			yo = -xo * Tan;
+			ray.x = (((int)display->player.x>>6)<<6) + 64;
+			ray.y = (display->player.x - ray.x) * Tan + display->player.y;
+			ray.dx = 64;
+			ray.dy = -ray.dx * Tan;
 		}
-		else if (cos(deg_to_rad(ra)) < -0.001)
+		else if (cos(deg_to_rad(ray.a)) < -0.001)
 		{
-			rx = (((int)display->player.x>>6)<<6) - 0.0001;
-			ry = (display->player.x - rx) * Tan + display->player.y;
-			xo = -64;
-			yo = -xo * Tan;
+			ray.x = (((int)display->player.x>>6)<<6) - 0.0001;
+			ray.y = (display->player.x - ray.x) * Tan + display->player.y;
+			ray.dx = -64;
+			ray.dy = -ray.dx * Tan;
 		}
 		else
 		{
-			rx = display->player.x;
-			ry = display->player.y;
+			ray.x = display->player.x;
+			ray.y = display->player.y;
 			dof = 8;
 		}
 		while(dof<8)
 		{
-			mx = (int)(rx)>>6;
-			my = (int)(ry)>>6;
+			mx = (int)(ray.x)>>6;
+			my = (int)(ray.y)>>6;
 			mp = my * mapX + mx;
 			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
 			{
 				dof = 8;
-				disV = cos(deg_to_rad(ra)) * (rx - display->player.x) - sin(deg_to_rad(ra)) * (ry - display->player.y);
+				disV = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
 			}
 			else
 			{
-				rx += xo;
-				ry += yo;
+				ray.x += ray.dx;
+				ray.y += ray.dy;
 				dof += 1;
 			}
 		}
-		vx = rx;
-		vy = ry;
+		vx = ray.x;
+		vy = ray.y;
 
 		// horizontal line check
 		dof = 0;
 		disH = 100000;
 		Tan = 1.0 / Tan;
-		if (sin(deg_to_rad(ra)) > 0.001)
+		if (sin(deg_to_rad(ray.a)) > 0.001)
 		{
-			ry = (((int)display->player.y>>6)<<6) - 0.0001;
-			rx = (display->player.y - ry) * Tan + display->player.x;
-			yo = -64;
-			xo = -yo * Tan;
+			ray.y = (((int)display->player.y>>6)<<6) - 0.0001;
+			ray.x = (display->player.y - ray.y) * Tan + display->player.x;
+			ray.dy = -64;
+			ray.dx = -ray.dy * Tan;
 		}
-		else if (sin(deg_to_rad(ra)) < -0.001)
+		else if (sin(deg_to_rad(ray.a)) < -0.001)
 		{
-			ry = (((int)display->player.y>>6)<<6) + 64;
-			rx = (display->player.y - ry) * Tan + display->player.x;
-			yo = 64;
-			xo = -yo * Tan;
+			ray.y = (((int)display->player.y>>6)<<6) + 64;
+			ray.x = (display->player.y - ray.y) * Tan + display->player.x;
+			ray.dy = 64;
+			ray.dx = -ray.dy * Tan;
 		}
 		else
 		{
-			rx = display->player.x;
-			ry = display->player.y;
+			ray.x = display->player.x;
+			ray.y = display->player.y;
 			dof = 8;
 		}
 		while(dof < 8)
 		{
-			mx = (int)(rx)>>6;
-			my = (int)(ry)>>6;
+			mx = (int)(ray.x)>>6;
+			my = (int)(ray.y)>>6;
 			mp = my * mapX + mx;
 			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
 			{
 				dof = 8;
-				disH = cos(deg_to_rad(ra)) * (rx - display->player.x) - sin(deg_to_rad(ra)) * (ry - display->player.y);
+				disH = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
 			}
 			else
 			{
-				rx += xo;
-				ry += yo;
+				ray.x += ray.dx;
+				ray.y += ray.dy;
 				dof += 1;
 			}
 		}
 		if (disV < disH)
 		{
-			rx = vx;
-			ry = vy;
+			ray.x = vx;
+			ray.y = vy;
 			disH = disV;
 		}
-		draw_line(display, display->player.x, display->player.y, rx, ry, 0xFF0000);
+		draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
 
-		int	ca = normalize_angle(display->player.a - ra);
+		int	ca = normalize_angle(display->player.a - ray.a);
 		disH = disH * cos(deg_to_rad(ca));
 		int	lineH = mapS * w_height / disH;
 		if (lineH > w_height)
@@ -272,7 +269,7 @@ void	draw_3d_rays(t_display *display)
 		int	lineOff = (w_height>>1) - (lineH>>1);                                               //line offset
 
 		draw_line(display, r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
-		ra = normalize_angle(ra - 60.0 / 480.0);                                                        //go to next ray
+		ray.a = normalize_angle(ray.a - 60.0 / 480.0);                                                        //go to next ray
 	}
 }
 
