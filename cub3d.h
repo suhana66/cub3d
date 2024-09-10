@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 14:59:11 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/10 15:21:16 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,22 @@ typedef struct s_display
 	int		endian;
 
 	t_coord	player;
+	int		exit_code;
 }	t_display;
 
 int		mlx_setup(t_display *display);
+void	quit_display(t_display *display);
 int		render_display(t_display *display);
-int		key_hook(int key, t_display *display);
-void	pixel_put_image(t_display *display, int x, int y, int color);
 void	clear_display(t_display *display);
-void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color);
+int		key_hook(int key, t_display *display);
+int		update_xy(t_display *display, double new_x, double new_y);
+void	draw_2d_map(t_display *display);
 void	draw_3d_rays(t_display *display);
 void	draw_player(t_display *display);
+void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color);
 void	draw_square(t_display *display, int x, int y, int size, int color);
-void	draw_2d_map(t_display *display);
-int		update_xy(t_display *display, double new_x, double new_y);
+void	pixel_put_image(t_display *display, int x, int y, int color);
+double	deg_to_rad(double degrees);
+double	normalize_angle(double angle);
 
 #endif

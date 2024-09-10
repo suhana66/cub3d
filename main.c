@@ -19,32 +19,19 @@ int		map[] = {
 	1, 1, 1, 1, 1, 1, 1, 1
 };
 
-double	deg_to_rad(double degrees)
-{
-	return (degrees * M_PI / 180.0);
-}
-
-double	normalize_angle(double angle)
-{
-	if (angle >= 360)
-		angle -= 360;
-	if (angle < 0)
-		angle += 360;
-	return (angle);
-}
-
 int	main(void)
 {
 	t_display	display;
 
-	mlx_setup(&display);
+	display.exit_code = mlx_setup(&display);
+	if (display.exit_code)
+		quit_display(&display);
 	display.player.x = 300;
 	display.player.y = 300;
 	display.player.a = 0;
 	display.player.dx = cos(deg_to_rad(display.player.a));
 	display.player.dy = -sin(deg_to_rad(display.player.a));
 	render_display(&display);
-	mlx_hook(display.win, ON_KEYDOWN, 0, key_hook, &display);
 	mlx_loop(display.mlx);
 	return (0);
 }
@@ -63,7 +50,21 @@ int	mlx_setup(t_display *display)
 	if (!display->img)
 		return (3); // error message
 	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
+	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
+	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
 	return (0);
+}
+
+void	quit_display(t_display *display)
+{
+	if (!display)
+		return ;
+	if (display->img)
+		mlx_destroy_image(display->mlx, display->img);
+	if (display->win)
+		mlx_destroy_window(display->mlx, display->win);
+	free(display->mlx);
+	exit(display->exit_code);
 }
 
 int	render_display(t_display *display)
@@ -97,6 +98,8 @@ void	clear_display(t_display *display)
 
 int	key_hook(int key, t_display *display)
 {
+	if (key == KEY_ESC)
+		quit_display(display);
 	if (key == KEY_LEFT)
 	{
 		display->player.a = normalize_angle(display->player.a + 5);
@@ -347,4 +350,18 @@ void	pixel_put_image(t_display *display, int x, int y, int color)
 
 	dst = display->buf + (y * display->l_len + x * (display->bpp / 8));
 	*(unsigned int*)dst = color;
+}
+
+double	deg_to_rad(double degrees)
+{
+	return (degrees * M_PI / 180.0);
+}
+
+double	normalize_angle(double angle)
+{
+	if (angle >= 360)
+		angle -= 360;
+	if (angle < 0)
+		angle += 360;
+	return (angle);
 }
