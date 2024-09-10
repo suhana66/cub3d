@@ -186,50 +186,14 @@ void	draw_3d_rays(t_display *display)
 	r = 0;
 	while (r < 480)
 	{
-		// vertical line check
-		dof = 0;
-		disV = 100000;
-		double Tan = tan(deg_to_rad(ray.a));
-		if(cos(deg_to_rad(ray.a)) > 0.001)
-		{
-			ray.x = (((int)display->player.x>>6)<<6) + 64;
-			ray.y = (display->player.x - ray.x) * Tan + display->player.y;
-			ray.dx = 64;
-			ray.dy = -ray.dx * Tan;
-		}
-		else if (cos(deg_to_rad(ray.a)) < -0.001)
-		{
-			ray.x = (((int)display->player.x>>6)<<6) - 0.0001;
-			ray.y = (display->player.x - ray.x) * Tan + display->player.y;
-			ray.dx = -64;
-			ray.dy = -ray.dx * Tan;
-		}
-		else
-		{
-			ray.x = display->player.x;
-			ray.y = display->player.y;
-			dof = 8;
-		}
-		while(dof < 8)
-		{
-			if (if_wall(ray.x, ray.y))
-			{
-				dof = 8;
-				disV = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
-			}
-			else
-			{
-				ray.x += ray.dx;
-				ray.y += ray.dy;
-				dof += 1;
-			}
-		}
+		disV = vertical_line_check(&display->player, &ray);
 		vx = ray.x;
 		vy = ray.y;
 
 		// horizontal line check
 		dof = 0;
 		disH = 100000;
+		double Tan = tan(deg_to_rad(ray.a));
 		Tan = 1.0 / Tan;
 		if (sin(deg_to_rad(ray.a)) > 0.001)
 		{
@@ -284,6 +248,47 @@ void	draw_3d_rays(t_display *display)
 		ray.a = normalize_angle(ray.a - 60.0 / 480.0);
 		r++;
 	}
+}
+
+double	vertical_line_check(t_coord *player, t_coord *ray)
+{
+	double Tan = tan(deg_to_rad(ray->a));
+	ray->x = player->x;
+	ray->y = player->y;
+	if(cos(deg_to_rad(ray->a)) > 0.001)
+	{
+		ray->x = (((int)player->x>>6)<<6) + 64;
+		ray->dx = 64;
+	}
+	else if (cos(deg_to_rad(ray->a)) < -0.001)
+	{
+		ray->x = (((int)player->x>>6)<<6) - 0.0001;
+		ray->dx = -64;
+	}
+	else
+		return (INFINITY);
+	ray->y = (player->x - ray->x) * Tan + player->y;
+	ray->dy = -ray->dx * Tan;
+	return (calc_dist(player, ray));
+}
+
+double	calc_dist(t_coord *player, t_coord *ray)
+{
+	int map_x = (int)ray->x>>6;
+	int map_y = (int)ray->y>>6;
+	int map_pos = map_y * mapX + map_x;
+	while(map_pos >= 0 && map_pos < mapX * mapY)
+	{
+		if (map[map_pos] == 1)
+			return (cos(deg_to_rad(ray->a)) * (ray->x - player->x)
+				- sin(deg_to_rad(ray->a)) * (ray->y - player->y));
+		ray->x += ray->dx;
+		ray->y += ray->dy;
+		map_x = (int)ray->x>>6;
+		map_y = (int)ray->y>>6;
+		map_pos = map_y * mapX + map_x;
+	}
+	return (INFINITY);
 }
 
 int	if_wall(double x, double y)
