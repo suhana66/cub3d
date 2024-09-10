@@ -1,57 +1,8 @@
-#include <stdlib.h>
-#include <math.h>
-#include "mlx.h"
+#include "cub3d.h"
 
-// general events
-enum
-{
-	ON_KEYDOWN = 2,
-	ON_DESTROY = 17
-};
-
-// key events
-enum
-{
-	KEY_ESC = 53,
-
-	KEY_A = 0,
-	KEY_S = 1,
-	KEY_D = 2,
-	KEY_W = 13,
-
-	KEY_LEFT = 123,
-	KEY_RIGHT = 124
-};
-
-int		w_width;
-int		w_height;
-
-void	*mlx;
-void	*win;
-void	*img;
-
-char	*buf;
-int		bpp;
-int		l_len;
-int		endian;
-
-double	py;
-double	px;
-double	pdx;
-double	pdy;
-double	pa;
-
-int		display(void);
-void	clear_display(void);
-int		key_hook(int key);
-
-void	draw_2d_map(void);
-void	draw_3d_rays(void);
-void	draw_player(void);
-
-void	draw_line(int x0, int y0, int x1, int y1, int color);
-void	draw_square(int x, int y, int size, int color);
-void	pixel_put_image(int x, int y, int color);
+int		w_width = 1024;
+int		w_height = 512;
+char	*w_title = "cub3d";
 
 int		mapX = 8;
 int		mapY = 8;
@@ -84,36 +35,49 @@ double	normalize_angle(double angle)
 
 int	main(void)
 {
-	w_width = 1024;
-	w_height = 512;
-	mlx = mlx_init();
-	win = mlx_new_window(mlx, w_width, w_height, "Hello World");
-	img = mlx_new_image(mlx, w_width, w_height);
-	buf = mlx_get_data_addr(img, &bpp, &l_len, &endian);
-	px = 300;
-	py = 300;
-	pa = 0;
-	pdx = cos(deg_to_rad(pa));
-	pdy = sin(deg_to_rad(pa));
-	display();
-	mlx_hook(win, ON_KEYDOWN, 0, key_hook, NULL);
-	mlx_loop(mlx);
-	(void)buf;
+	t_display	display;
+
+	mlx_setup(&display);
+	display.player.x = 300;
+	display.player.y = 300;
+	display.player.a = 0;
+	display.player.dx = cos(deg_to_rad(display.player.a));
+	display.player.dy = -sin(deg_to_rad(display.player.a));
+	render_display(&display);
+	mlx_hook(display.win, ON_KEYDOWN, 0, key_hook, &display);
+	mlx_loop(display.mlx);
 	return (0);
 }
 
-int	display(void)
+int	mlx_setup(t_display *display)
 {
-	mlx_clear_window(mlx, win);
-	clear_display();
-	draw_2d_map();
-	draw_3d_rays();
-	draw_player();
-	mlx_put_image_to_window(mlx, win, img, 0, 0);
+	display->mlx = mlx_init();
+	display->win = NULL;
+	display->img = NULL;
+	if (!display->mlx)
+		return (1); // error message
+	display->win = mlx_new_window(display->mlx, w_width, w_height, w_title);
+	if (!display->win)
+		return (2); // error message
+	display->img = mlx_new_image(display->mlx, w_width, w_height);
+	if (!display->img)
+		return (3); // error message
+	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
 	return (0);
 }
 
-void	clear_display(void)
+int	render_display(t_display *display)
+{
+	mlx_clear_window(display->mlx, display->win);
+	clear_display(display);
+	draw_2d_map(display);
+	draw_3d_rays(display);
+	draw_player(display);
+	mlx_put_image_to_window(display->mlx, display->win, display->img, 0, 0);
+	return (0);
+}
+
+void	clear_display(t_display *display)
 {
 	int	i;
 	int	j;
@@ -124,42 +88,42 @@ void	clear_display(void)
 		j = 0;
 		while (j < w_height)
 		{
-			pixel_put_image(i, j, 0x4C4C4C);
+			pixel_put_image(display, i, j, 0x4C4C4C);
 			j++;
 		}
 		i++;
 	}
 }
 
-int	key_hook(int key)
+int	key_hook(int key, t_display *display)
 {
 	if (key == KEY_A)
 	{
-		pa = normalize_angle(pa + 5);
-		pdx = cos(deg_to_rad(pa));
-		pdy = -sin(deg_to_rad(pa));
+		display->player.a = normalize_angle(display->player.a + 5);
+		display->player.dx = cos(deg_to_rad(display->player.a));
+		display->player.dy = -sin(deg_to_rad(display->player.a));
 	}
 	if (key == KEY_D)
 	{
-		pa = normalize_angle(pa - 5);
-		pdx = cos(deg_to_rad(pa));
-		pdy = -sin(deg_to_rad(pa));
+		display->player.a = normalize_angle(display->player.a - 5);
+		display->player.dx = cos(deg_to_rad(display->player.a));
+		display->player.dy = -sin(deg_to_rad(display->player.a));
 	}
 	if (key == KEY_W)
 	{
-		px += pdx;
-		py += pdy;
+		display->player.x += display->player.dx;
+		display->player.y += display->player.dy;
 	}
 	if (key == KEY_S)
 	{
-		px -= pdx;
-		py -= pdy;
+		display->player.x -= display->player.dx;
+		display->player.y -= display->player.dy;
 	}
-	display();
+	render_display(display);
 	return (0);
 }
 
-void	draw_2d_map(void)
+void	draw_2d_map(t_display *display)
 {
 	int	x;
 	int	y;
@@ -179,14 +143,14 @@ void	draw_2d_map(void)
 				color = 0x000000;
 			xo = x * mapS;
 			yo = y * mapS;
-			draw_square(xo + 1, yo + 1, mapS - 1, color);
+			draw_square(display, xo + 1, yo + 1, mapS - 1, color);
 			x++;
 		}
 		y++;
 	}
 }
 
-void draw_3d_rays(void)
+void	draw_3d_rays(t_display *display)
 {
 	int	r;
 	int	mx;
@@ -204,7 +168,7 @@ void draw_3d_rays(void)
 	double	disV;
 	double	disH;
 
-	ra = normalize_angle(pa + 30);
+	ra = normalize_angle(display->player.a + 30);
 	for(r=0;r<480;r++)
 	{
 		// vertical line check
@@ -213,22 +177,22 @@ void draw_3d_rays(void)
 		double Tan = tan(deg_to_rad(ra));
 		if(cos(deg_to_rad(ra)) > 0.001)
 		{
-			rx = (((int)px>>6)<<6) + 64;
-			ry = (px - rx) * Tan + py;
+			rx = (((int)display->player.x>>6)<<6) + 64;
+			ry = (display->player.x - rx) * Tan + display->player.y;
 			xo = 64;
 			yo = -xo * Tan;
 		}
 		else if (cos(deg_to_rad(ra)) < -0.001)
 		{
-			rx = (((int)px>>6)<<6) - 0.0001;
-			ry = (px - rx) * Tan + py;
+			rx = (((int)display->player.x>>6)<<6) - 0.0001;
+			ry = (display->player.x - rx) * Tan + display->player.y;
 			xo = -64;
 			yo = -xo * Tan;
 		}
 		else
 		{
-			rx = px;
-			ry = py;
+			rx = display->player.x;
+			ry = display->player.y;
 			dof = 8;
 		}
 		while(dof<8)
@@ -239,7 +203,7 @@ void draw_3d_rays(void)
 			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
 			{
 				dof = 8;
-				disV = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+				disV = cos(deg_to_rad(ra)) * (rx - display->player.x) - sin(deg_to_rad(ra)) * (ry - display->player.y);
 			}
 			else
 			{
@@ -257,22 +221,22 @@ void draw_3d_rays(void)
 		Tan = 1.0 / Tan;
 		if (sin(deg_to_rad(ra)) > 0.001)
 		{
-			ry = (((int)py>>6)<<6) - 0.0001;
-			rx = (py - ry) * Tan + px;
+			ry = (((int)display->player.y>>6)<<6) - 0.0001;
+			rx = (display->player.y - ry) * Tan + display->player.x;
 			yo = -64;
 			xo = -yo * Tan;
 		}
 		else if (sin(deg_to_rad(ra)) < -0.001)
 		{
-			ry = (((int)py>>6)<<6) + 64;
-			rx = (py - ry) * Tan + px;
+			ry = (((int)display->player.y>>6)<<6) + 64;
+			rx = (display->player.y - ry) * Tan + display->player.x;
 			yo = 64;
 			xo = -yo * Tan;
 		}
 		else
 		{
-			rx = px;
-			ry = py;
+			rx = display->player.x;
+			ry = display->player.y;
 			dof = 8;
 		}
 		while(dof < 8)
@@ -283,7 +247,7 @@ void draw_3d_rays(void)
 			if (mp > 0 && mp < mapX * mapY && map[mp] == 1)
 			{
 				dof = 8;
-				disH = cos(deg_to_rad(ra)) * (rx - px) - sin(deg_to_rad(ra)) * (ry - py);
+				disH = cos(deg_to_rad(ra)) * (rx - display->player.x) - sin(deg_to_rad(ra)) * (ry - display->player.y);
 			}
 			else
 			{
@@ -298,28 +262,28 @@ void draw_3d_rays(void)
 			ry = vy;
 			disH = disV;
 		}
-		draw_line(px, py, rx, ry, 0xFF0000);
+		draw_line(display, display->player.x, display->player.y, rx, ry, 0xFF0000);
 
-		int	ca = normalize_angle(pa - ra);
+		int	ca = normalize_angle(display->player.a - ra);
 		disH = disH * cos(deg_to_rad(ca));
 		int	lineH = mapS * w_height / disH;
 		if (lineH > w_height)
 			lineH = w_height;
 		int	lineOff = (w_height>>1) - (lineH>>1);                                               //line offset
 
-		draw_line(r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
+		draw_line(display, r + 530, lineOff, r + 530, lineOff + lineH, 0x00FF00);
 		ra = normalize_angle(ra - 60.0 / 480.0);                                                        //go to next ray
 	}
 }
 
-void	draw_player(void)
+void	draw_player(t_display *display)
 {
 	int color = 0xFFFF00;
-	draw_square(px - 4, py - 4, 8, color);
-	draw_line(px, py, px + pdx * 20, py + pdy * 20, color);
+	draw_square(display, display->player.x - 4, display->player.y - 4, 8, color);
+	draw_line(display, display->player.x, display->player.y, display->player.x + display->player.dx * 20, display->player.y + display->player.dy * 20, color);
 }
 
-void draw_line(int x0, int y0, int x1, int y1, int color)
+void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color)
 {
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
@@ -328,7 +292,7 @@ void draw_line(int x0, int y0, int x1, int y1, int color)
     int err = dx - dy;
 
     while (1) {
-		pixel_put_image(x0, y0, color);
+		pixel_put_image(display, x0, y0, color);
         if (x0 == x1 && y0 == y1) break;       
         int e2 = 2 * err;
         if (e2 > -dy) { err -= dy; x0 += sx; }
@@ -336,7 +300,7 @@ void draw_line(int x0, int y0, int x1, int y1, int color)
     }
 }
 
-void	draw_square(int x, int y, int size, int color)
+void	draw_square(t_display *display, int x, int y, int size, int color)
 {
 	int	i;
 	int	j;
@@ -347,17 +311,17 @@ void	draw_square(int x, int y, int size, int color)
 		j = 0;
 		while (j < size)
 		{
-			pixel_put_image(x + i, y + j, color);
+			pixel_put_image(display, x + i, y + j, color);
 			j++;
 		}
 		i++;
 	}
 }
 
-void	pixel_put_image(int x, int y, int color)
+void	pixel_put_image(t_display *display, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = buf + (y * l_len + x * (bpp / 8));
+	dst = display->buf + (y * display->l_len + x * (display->bpp / 8));
 	*(unsigned int*)dst = color;
 }
