@@ -173,7 +173,6 @@ void	draw_2d_map(t_display *display)
 void	draw_3d_rays(t_display *display)
 {
 	int	r;
-	int	dof;
 
 	double	vx;
 	double	vy;
@@ -190,45 +189,7 @@ void	draw_3d_rays(t_display *display)
 		vx = ray.x;
 		vy = ray.y;
 
-		// horizontal line check
-		dof = 0;
-		disH = 100000;
-		double Tan = tan(deg_to_rad(ray.a));
-		Tan = 1.0 / Tan;
-		if (sin(deg_to_rad(ray.a)) > 0.001)
-		{
-			ray.y = (((int)display->player.y>>6)<<6) - 0.0001;
-			ray.x = (display->player.y - ray.y) * Tan + display->player.x;
-			ray.dy = -64;
-			ray.dx = -ray.dy * Tan;
-		}
-		else if (sin(deg_to_rad(ray.a)) < -0.001)
-		{
-			ray.y = (((int)display->player.y>>6)<<6) + 64;
-			ray.x = (display->player.y - ray.y) * Tan + display->player.x;
-			ray.dy = 64;
-			ray.dx = -ray.dy * Tan;
-		}
-		else
-		{
-			ray.x = display->player.x;
-			ray.y = display->player.y;
-			dof = 8;
-		}
-		while(dof < 8)
-		{
-			if (if_wall(ray.x, ray.y))
-			{
-				dof = 8;
-				disH = cos(deg_to_rad(ray.a)) * (ray.x - display->player.x) - sin(deg_to_rad(ray.a)) * (ray.y - display->player.y);
-			}
-			else
-			{
-				ray.x += ray.dx;
-				ray.y += ray.dy;
-				dof += 1;
-			}
-		}
+		disH = horizontal_line_check(&display->player, &ray);
 		if (disV < disH)
 		{
 			ray.x = vx;
@@ -248,6 +209,29 @@ void	draw_3d_rays(t_display *display)
 		ray.a = normalize_angle(ray.a - 60.0 / 480.0);
 		r++;
 	}
+}
+
+double	horizontal_line_check(t_coord *player, t_coord *ray)
+{
+	// horizontal line check
+	double Tan = 1.0 / tan(deg_to_rad(ray->a));
+	ray->x = player->x;
+	ray->y = player->y;
+	if (sin(deg_to_rad(ray->a)) > 0.001)
+	{
+		ray->y = (((int)player->y>>6)<<6) - 0.0001;
+		ray->dy = -64;
+	}
+	else if (sin(deg_to_rad(ray->a)) < -0.001)
+	{
+		ray->y = (((int)player->y>>6)<<6) + 64;
+		ray->dy = 64;
+	}
+	else
+		return (INFINITY);
+	ray->x = (player->y - ray->y) * Tan + player->x;
+	ray->dx = -ray->dy * Tan;
+	return (calc_dist(player, ray));
 }
 
 double	vertical_line_check(t_coord *player, t_coord *ray)

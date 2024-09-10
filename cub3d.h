@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 16:48:11 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/10 17:04:29 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
 void	draw_2d_map(t_display *display);
 void	draw_3d_rays(t_display *display);
+double	horizontal_line_check(t_coord *player, t_coord *ray);
 double	vertical_line_check(t_coord *player, t_coord *ray);
 double	calc_dist(t_coord *player, t_coord *ray);
 int		if_wall(double x, double y);
