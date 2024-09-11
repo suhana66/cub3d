@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 09:00:22 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/07/07 09:47:09 by mafaisal         ###   ########.fr       */
+/*   Updated: 2024/09/11 12:55:04 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ char	*read_to_line(char *line, int fd)
 	}
 	return (free(buf), line);
 }
-
-#include <stdio.h>
 
 char	*exact_line(char *line)
 {

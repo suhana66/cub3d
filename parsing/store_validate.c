@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 14:44:24 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 21:27:22 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 12:54:23 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,14 @@ void	save_element(char *str, t_display *display, char **file_content)
 	else
 		(free_array(file_content), free_exit("Invalid elements", display, 1));
 	if (error)
-		(free_array(file_content), free_exit("Invalid Color format", display, 1));
+		(free_array(file_content), free_exit("Invalid Color format",
+				display, 1));
 }
 
 void	print_info(t_display *display)
 {
+	int	i;
+
 	printf("\n========Structure Elements=======\n\n");
 	printf("c : %d, f: %d\n\n", display->c, display->f);
 	printf("NO: %s\n", display->n_image);
@@ -55,8 +58,6 @@ void	print_info(t_display *display)
 	printf("SO: %s\n", display->s_image);
 	printf("WE: %s\n\n", display->w_image);
 	printf("Height: %d\n", display->map_height);
-	int	i;
-
 	i = 0;
 	while (display->map[i])
 		printf("%s\n", display->map[i++]);

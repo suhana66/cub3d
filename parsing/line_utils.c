@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 15:53:38 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 21:27:02 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 12:53:25 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,8 @@ void	store_player(t_display *display, int i, int j)
 		display->player.a = 270;
 	if (display->map[i][j] == 'W')
 		display->player.a = 180;
-	set_dx_dy(display->player.a, &display->player.dx, &display->player.dy);
-}
-
-void	set_dx_dy(double angle, double *dx_res, double *dy_res)
-{
-	if (dx_res)
-		*dx_res = cos(deg_to_rad(angle));
-	if (dy_res)
-		*dy_res = -sin(deg_to_rad(angle));
+	display->player.dx = cos(deg_to_rad(display->player.a));
+	display->player.dy = -sin(deg_to_rad(display->player.a));
 }
 
 int	well_surrounded(t_display *display, int i, int j)
@@ -42,7 +35,7 @@ int	well_surrounded(t_display *display, int i, int j)
 	if (j < (int)ft_strlen(display->map[i]) - 1
 		&& !ft_strchr("1 ", display->map[i][j + 1]))
 		return (0);
-	if ( j > 0 && !ft_strchr("1 ", display->map[i][j - 1]))
+	if (j > 0 && !ft_strchr("1 ", display->map[i][j - 1]))
 		return (0);
 	if (i > 0 && j < (int)ft_strlen(display->map[i - 1])
 		&& !ft_strchr("1 ", display->map[i - 1][j]))
@@ -55,7 +48,7 @@ int	well_surrounded(t_display *display, int i, int j)
 
 int	is_edge(int i, int j, t_display *display)
 {
-	if ((i == 0 || i == display->map_height -1
+	if ((i == 0 || i == display->map_height - 1
 			|| j == 0 || j == (int)ft_strlen(display->map[i]) - 1))
 		return (1);
 	return (0);
