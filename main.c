@@ -1,19 +1,5 @@
 #include "cub3d.h"
 
-// int		mapX = 8;
-// int		mapY = 8;
-
-// int		map[] = {
-// 	1, 1, 1, 1, 1, 1, 1, 1,
-// 	1, 0, 1, 0, 0, 0, 0, 1,
-// 	1, 0, 1, 0, 0, 0, 0, 1,
-// 	1, 0, 1, 0, 0, 0, 0, 1,
-// 	1, 0, 0, 0, 0, 0, 0, 1,
-// 	1, 0, 0, 0, 0, 1, 0, 1,
-// 	1, 0, 0, 0, 0, 0, 0, 1,
-// 	1, 1, 1, 1, 1, 1, 1, 1
-// };
-
 int	main(int argc, char **argv)
 {
 	t_display	display;
@@ -69,8 +55,7 @@ int	render_display(t_display *display)
 	mlx_clear_window(display->mlx, display->win);
 	clear_display(display);
 	draw_3d_rays(display);
-	draw_2d_map(display);
-	draw_player(display);
+	draw_minimap(display);
 	mlx_put_image_to_window(display->mlx, display->win, display->img, 0, 0);
 	return (0);
 }
@@ -156,31 +141,29 @@ int	update_xy(t_display *display, double new_x, double new_y)
 	return (1);
 }
 
-void	draw_2d_map(t_display *display)
+void	draw_minimap(t_display *display)
 {
-	int	x;
-	int	y;
-	int	xo;
-	int	yo;
-	int	color;
+	int	i;
+	int	j;
+	double	scale;
 
-	y = 0;
-	while (y < display->map_height)
+	i = 0;
+	scale = 16;
+	while (display->map[i])
 	{
-		x = 0;
-		while (x < (int)ft_strlen(display->map[y]))
+		j = 0;
+		while (display->map[i][j])
 		{
-			if (display->map[y][x] == '1')
-				color = 0xFFFFFF;
-			else
-				color = 0x000000;
-			xo = x * CUBE_SIZE;
-			yo = y * CUBE_SIZE;
-			draw_square(display, xo + 1, yo + 1, CUBE_SIZE - 1, color);
-			x++;
+			if (display->map[i][j] == '1')
+				draw_square(display, j * scale, i * scale, scale, 0x515e48);
+			else if (display->map[i][j] == '0' || ft_strchr("NSEW", display->map[i][j]))
+				draw_square(display, j * scale, i * scale, scale, 0xacc29d);
+			j++;
 		}
-		y++;
+		i++;
 	}
+	draw_square(display, display->player.x / 4 - 4, display->player.y /4 - 4, 8, 0xAA0000);
+	draw_line(display, display->player.x / 4, display->player.y / 4, display->player.x / 4 + display->player.dx * 20, display->player.y / 4 + display->player.dy * 20, 0xAA0000);
 }
 
 void	draw_3d_rays(t_display *display)
@@ -288,13 +271,6 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray)
 		ray->y += ray->dy;
 	}
 	return (INFINITY);
-}
-
-void	draw_player(t_display *display)
-{
-	int color = 0xFFFF00;
-	draw_square(display, display->player.x - 4, display->player.y - 4, 8, color);
-	draw_line(display, display->player.x, display->player.y, display->player.x + display->player.dx * 20, display->player.y + display->player.dy * 20, color);
 }
 
 void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color)

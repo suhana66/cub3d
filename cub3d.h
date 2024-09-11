@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/10 21:54:32 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 10:22:34 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define WIN_HEIGHT 512
 # define WIN_TITLE "cub3d"
 
-# define CUBE_SIZE 16
+# define CUBE_SIZE 64
 # define FOV 60
 # define SPEED 8
 
@@ -96,12 +96,11 @@ int		render_display(t_display *display);
 void	clear_display(t_display *display);
 int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
-void	draw_2d_map(t_display *display);
+void	draw_minimap(t_display *display);
 void	draw_3d_rays(t_display *display);
 double	horizontal_line_check(t_coord player, char **map, int map_height, t_coord *ray);
 double	vertical_line_check(t_coord player, char **map, int map_height, t_coord *ray);
 double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
-void	draw_player(t_display *display);
 void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color);
 void	draw_square(t_display *display, int x, int y, int size, int color);
 void	pixel_put_image(t_display *display, int x, int y, int color);
