@@ -194,7 +194,7 @@ void	draw_3d_rays(t_display *display)
 
 	ray.a = normalize_angle(display->player.a + FOV / 2.0);
 	r = 0;
-	while (r < 480)
+	while (r < WIN_WIDTH)
 	{
 		dist_v = vertical_line_check(display->player, display->map, display->map_height, &ray);
 		temp_x = ray.x;
@@ -207,16 +207,16 @@ void	draw_3d_rays(t_display *display)
 			ray.y = temp_y;
 			dist_h = dist_v;
 		}
-		draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
+		// draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
 
 		dist_h = dist_h * cos(deg_to_rad(normalize_angle(display->player.a - ray.a)));
 		line_height = CUBE_SIZE * WIN_HEIGHT / dist_h;
 		if (line_height >= WIN_HEIGHT)
 			line_height = WIN_HEIGHT - 1;
 		line_offset = WIN_HEIGHT / 2 - line_height / 2;
-		draw_line(display, r + 530, line_offset, r + 530, line_offset + line_height, 0x00FF00);
+		draw_line(display, r, line_offset, r, line_offset + line_height, 0x00FF00);
 		
-		ray.a = normalize_angle(ray.a - (double)FOV / 480);
+		ray.a = normalize_angle(ray.a - (double)FOV / WIN_WIDTH);
 		r++;
 	}
 }
