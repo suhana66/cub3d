@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 10:39:56 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 10:55:34 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	store_validate(char **file_content, t_display *display);
 int		str_to_int(const char *str, int *error);
 
 void	save_texture(char *str, t_display *display);
-// bool	open_textures(t_display *display);
+int		open_textures(t_display *display);
 
 void	free_clear(char *str);
 void	free_array(char **array);

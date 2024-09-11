@@ -14,6 +14,9 @@ int	main(int argc, char **argv)
 
 void	init_info(t_display *display)
 {
+	display->mlx = NULL;
+	display->win = NULL;
+	display->img = NULL;
 	display->n_image = NULL;
 	display->e_image = NULL;
 	display->s_image = NULL;
@@ -29,8 +32,6 @@ void	init_info(t_display *display)
 int	mlx_setup(t_display *display)
 {
 	display->mlx = mlx_init();
-	display->win = NULL;
-	display->img = NULL;
 	if (!display->mlx)
 		free_exit(NULL, display, 1); // error message
 	display->win = mlx_new_window(display->mlx, WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
@@ -42,6 +43,8 @@ int	mlx_setup(t_display *display)
 	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
 	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
 	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
+	if (!open_textures(display))
+		free_exit(NULL, display, 4); // error message
 	return (0);
 }
 
