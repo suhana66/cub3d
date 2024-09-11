@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 10:55:34 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 11:30:28 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,27 @@ typedef struct s_coord
 	double	dy;
 }	t_coord;
 
+typedef struct s_image
+{
+	void	*image;
+	char	*buffer;
+	int		bpp;
+	int		line_length;
+	int		endian;
+	int		w;
+	int		h;
+}	t_image;
+
 typedef struct s_display
 {
 	void	*mlx;
 	void	*win;
-	void	*img;
+	t_image	img;
 
-	char	*buf;
-	int		bpp;
-	int		l_len;
-	int		endian;
+	// char	*buf;
+	// int		bpp;
+	// int		l_len;
+	// int		endian;
 
 	t_coord	player;
 	int		c;
@@ -93,17 +104,17 @@ void	init_info(t_display *display);
 int		mlx_setup(t_display *display);
 void	quit_display(t_display *display);
 int		render_display(t_display *display);
-void	clear_display(t_display *display);
+void	set_background(t_image *img, int ceiling, int floor);
 int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
-void	draw_minimap(t_display *display);
-void	draw_3d_rays(t_display *display);
+void	draw_minimap(t_image *img, char **map, t_coord player);
+void	draw_3d_rays(t_image *img, t_coord player, char **map, int map_height);
 double	horizontal_line_check(t_coord player, char **map, int map_height, t_coord *ray);
 double	vertical_line_check(t_coord player, char **map, int map_height, t_coord *ray);
 double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
-void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color);
-void	draw_square(t_display *display, int x, int y, int size, int color);
-void	pixel_put_image(t_display *display, int x, int y, int color);
+void	draw_line(t_image *img, int x0, int y0, int x1, int y1, int color);
+void	draw_square(t_image *img, int x, int y, int size, int color);
+void	pixel_put_image(t_image *img, int x, int y, int color);
 double	deg_to_rad(double degrees);
 double	normalize_angle(double angle);
 

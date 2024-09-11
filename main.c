@@ -16,7 +16,7 @@ void	init_info(t_display *display)
 {
 	display->mlx = NULL;
 	display->win = NULL;
-	display->img = NULL;
+	display->img.image = NULL;
 	display->n_image = NULL;
 	display->e_image = NULL;
 	display->s_image = NULL;
@@ -37,10 +37,11 @@ int	mlx_setup(t_display *display)
 	display->win = mlx_new_window(display->mlx, WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
 	if (!display->win)
 		free_exit(NULL, display, 2); // error message
-	display->img = mlx_new_image(display->mlx, WIN_WIDTH, WIN_HEIGHT);
-	if (!display->img)
+	display->img.image = mlx_new_image(display->mlx, WIN_WIDTH, WIN_HEIGHT);
+	if (!display->img.image)
 		free_exit(NULL, display, 3); // error message
-	display->buf = mlx_get_data_addr(display->img, &display->bpp, &display->l_len, &display->endian);
+	display->img.buffer = mlx_get_data_addr(display->img.image,
+			&display->img.bpp, &display->img.line_length, &display->img.endian);
 	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
 	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
 	if (!open_textures(display))
@@ -56,14 +57,14 @@ void	quit_display(t_display *display)
 int	render_display(t_display *display)
 {
 	mlx_clear_window(display->mlx, display->win);
-	clear_display(display);
-	draw_3d_rays(display);
-	draw_minimap(display);
-	mlx_put_image_to_window(display->mlx, display->win, display->img, 0, 0);
+	set_background(&display->img, display->c, display->f);
+	draw_3d_rays(&display->img, display->player, display->map, display->map_height);
+	draw_minimap(&display->img, display->map, display->player);
+	mlx_put_image_to_window(display->mlx, display->win, display->img.image, 0, 0);
 	return (0);
 }
 
-void	clear_display(t_display *display)
+void	set_background(t_image *img, int ceiling, int floor)
 {
 	int	i;
 	int	j;
@@ -75,9 +76,9 @@ void	clear_display(t_display *display)
 		while (j < WIN_HEIGHT)
 		{
 			if (j < WIN_HEIGHT / 2)
-				pixel_put_image(display, i, j, display->c);
+				pixel_put_image(img, i, j, ceiling);
 			else
-				pixel_put_image(display, i, j, display->f);
+				pixel_put_image(img, i, j, floor);
 			j++;
 		}
 		i++;
@@ -144,30 +145,30 @@ int	update_xy(t_display *display, double new_x, double new_y)
 	return (1);
 }
 
-void	draw_minimap(t_display *display)
+void	draw_minimap(t_image *img, char **map, t_coord player)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (display->map[i])
+	while (map[i])
 	{
 		j = 0;
-		while (display->map[i][j])
+		while (map[i][j])
 		{
-			if (display->map[i][j] == '1')
-				draw_square(display, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0x515e48);
-			else if (display->map[i][j] == '0' || ft_strchr("NSEW", display->map[i][j]))
-				draw_square(display, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0xacc29d);
+			if (map[i][j] == '1')
+				draw_square(img, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0x515e48);
+			else if (map[i][j] == '0' || ft_strchr("NSEW", map[i][j]))
+				draw_square(img, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0xacc29d);
 			j++;
 		}
 		i++;
 	}
-	draw_square(display, display->player.x - CUBE_SIZE / 4, display->player.y - CUBE_SIZE / 4, CUBE_SIZE / 2, 0xAA0000);
-	draw_line(display, display->player.x, display->player.y, display->player.x + display->player.dx * 20, display->player.y + display->player.dy * 20, 0xAA0000);
+	draw_square(img, player.x - CUBE_SIZE / 4, player.y - CUBE_SIZE / 4, CUBE_SIZE / 2, 0xAA0000);
+	draw_line(img, player.x, player.y, player.x + player.dx * 20, player.y + player.dy * 20, 0xAA0000);
 }
 
-void	draw_3d_rays(t_display *display)
+void	draw_3d_rays(t_image *img, t_coord player, char **map, int map_height)
 {
 	t_coord	ray;
 	int		r;
@@ -179,15 +180,15 @@ void	draw_3d_rays(t_display *display)
 	int		line_height;
 	int		line_offset;
 
-	ray.a = normalize_angle(display->player.a + FOV / 2.0);
+	ray.a = normalize_angle(player.a + FOV / 2.0);
 	r = 0;
 	while (r < WIN_WIDTH)
 	{
-		dist_v = vertical_line_check(display->player, display->map, display->map_height, &ray);
+		dist_v = vertical_line_check(player, map, map_height, &ray);
 		temp_x = ray.x;
 		temp_y = ray.y;
 
-		dist_h = horizontal_line_check(display->player, display->map, display->map_height, &ray);
+		dist_h = horizontal_line_check(player, map, map_height, &ray);
 		if (dist_v < dist_h)
 		{
 			ray.x = temp_x;
@@ -196,12 +197,12 @@ void	draw_3d_rays(t_display *display)
 		}
 		// draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
 
-		dist_h = dist_h * cos(deg_to_rad(normalize_angle(display->player.a - ray.a)));
+		dist_h = dist_h * cos(deg_to_rad(normalize_angle(player.a - ray.a)));
 		line_height = CUBE_SIZE * WIN_HEIGHT / dist_h;
 		if (line_height >= WIN_HEIGHT)
 			line_height = WIN_HEIGHT - 1;
 		line_offset = WIN_HEIGHT / 2 - line_height / 2;
-		draw_line(display, r, line_offset, r, line_offset + line_height, 0x00FF00);
+		draw_line(img, r, line_offset, r, line_offset + line_height, 0x00FF00);
 		
 		ray.a = normalize_angle(ray.a - (double)FOV / WIN_WIDTH);
 		r++;
@@ -274,7 +275,7 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray)
 	return (INFINITY);
 }
 
-void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color)
+void	draw_line(t_image *img, int x0, int y0, int x1, int y1, int color)
 {
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
@@ -283,7 +284,7 @@ void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color)
     int err = dx - dy;
 
     while (1) {
-		pixel_put_image(display, x0, y0, color);
+		pixel_put_image(img, x0, y0, color);
         if (x0 == x1 && y0 == y1) break;       
         int e2 = 2 * err;
         if (e2 > -dy) { err -= dy; x0 += sx; }
@@ -291,7 +292,7 @@ void	draw_line(t_display *display, int x0, int y0, int x1, int y1, int color)
     }
 }
 
-void	draw_square(t_display *display, int x, int y, int size, int color)
+void	draw_square(t_image *img, int x, int y, int size, int color)
 {
 	int	i;
 	int	j;
@@ -302,18 +303,18 @@ void	draw_square(t_display *display, int x, int y, int size, int color)
 		j = 0;
 		while (j < size)
 		{
-			pixel_put_image(display, x + i, y + j, color);
+			pixel_put_image(img, x + i, y + j, color);
 			j++;
 		}
 		i++;
 	}
 }
 
-void	pixel_put_image(t_display *display, int x, int y, int color)
+void	pixel_put_image(t_image *img, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = display->buf + (y * display->l_len + x * (display->bpp / 8));
+	dst = img->buffer + (y * img->line_length + x * (img->bpp / 8));
 	*(unsigned int*)dst = color;
 }
 
