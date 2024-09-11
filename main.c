@@ -68,8 +68,8 @@ int	render_display(t_display *display)
 {
 	mlx_clear_window(display->mlx, display->win);
 	clear_display(display);
-	draw_2d_map(display);
 	draw_3d_rays(display);
+	draw_2d_map(display);
 	draw_player(display);
 	mlx_put_image_to_window(display->mlx, display->win, display->img, 0, 0);
 	return (0);
@@ -86,7 +86,10 @@ void	clear_display(t_display *display)
 		j = 0;
 		while (j < WIN_HEIGHT)
 		{
-			pixel_put_image(display, i, j, 0x4C4C4C);
+			if (j < WIN_HEIGHT / 2)
+				pixel_put_image(display, i, j, display->c);
+			else
+				pixel_put_image(display, i, j, display->f);
 			j++;
 		}
 		i++;
