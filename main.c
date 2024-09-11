@@ -145,25 +145,23 @@ void	draw_minimap(t_display *display)
 {
 	int	i;
 	int	j;
-	double	scale;
 
 	i = 0;
-	scale = 16;
 	while (display->map[i])
 	{
 		j = 0;
 		while (display->map[i][j])
 		{
 			if (display->map[i][j] == '1')
-				draw_square(display, j * scale, i * scale, scale, 0x515e48);
+				draw_square(display, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0x515e48);
 			else if (display->map[i][j] == '0' || ft_strchr("NSEW", display->map[i][j]))
-				draw_square(display, j * scale, i * scale, scale, 0xacc29d);
+				draw_square(display, j * CUBE_SIZE, i * CUBE_SIZE, CUBE_SIZE, 0xacc29d);
 			j++;
 		}
 		i++;
 	}
-	draw_square(display, display->player.x / 4 - 4, display->player.y /4 - 4, 8, 0xAA0000);
-	draw_line(display, display->player.x / 4, display->player.y / 4, display->player.x / 4 + display->player.dx * 20, display->player.y / 4 + display->player.dy * 20, 0xAA0000);
+	draw_square(display, display->player.x - CUBE_SIZE / 4, display->player.y - CUBE_SIZE / 4, CUBE_SIZE / 2, 0xAA0000);
+	draw_line(display, display->player.x, display->player.y, display->player.x + display->player.dx * 20, display->player.y + display->player.dy * 20, 0xAA0000);
 }
 
 void	draw_3d_rays(t_display *display)

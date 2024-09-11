@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 10:22:34 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 10:39:56 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 # define WIN_HEIGHT 512
 # define WIN_TITLE "cub3d"
 
-# define CUBE_SIZE 64
+# define CUBE_SIZE 16
 # define FOV 60
-# define SPEED 8
+# define SPEED 2
 
 // general events
 enum
