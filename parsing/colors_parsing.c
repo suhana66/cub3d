@@ -6,11 +6,11 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:25:35 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 19:51:54 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:26:16 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../cub3d.h"
+#include "cub3d.h"
 
 void	color_to_ascii(int *color, t_display *display, char *str)
 {

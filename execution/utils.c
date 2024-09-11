@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   custom_trim.c                                      :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/14 17:08:05 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:19 by susajid          ###   ########.fr       */
+/*   Created: 2024/09/11 16:22:28 by susajid           #+#    #+#             */
+/*   Updated: 2024/09/11 16:23:10 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-char	*custom_trim(char const *s1, char const *set, int side)
+double	deg_to_rad(double degrees)
 {
-	int		start;
-	int		len;
-	int		i;
+	return (degrees * M_PI / 180.0);
+}
 
-	i = 0;
-	while (side <= 1 && s1[i] && ft_strchr(set, s1[i]))
-		i++;
-	start = i;
-	len = 0;
-	if (s1[i])
-	{
-		i = ft_strlen(s1) - 1;
-		while (side >= 1 && s1[i] && ft_strchr(set, s1[i]))
-			i--;
-		len = i - start + 1;
-	}
-	return (ft_substr(s1, start, len));
+double	normalize_angle(double angle)
+{
+	if (angle >= 360)
+		angle -= 360;
+	if (angle < 0)
+		angle += 360;
+	return (angle);
 }

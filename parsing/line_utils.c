@@ -6,11 +6,11 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 15:53:38 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 12:53:25 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:26:22 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../cub3d.h"
+#include "cub3d.h"
 
 void	store_player(t_display *display, int i, int j)
 {

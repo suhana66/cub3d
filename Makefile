@@ -12,10 +12,15 @@ PARSING := parsing/colors_parsing.c \
 	parsing/store_validate.c \
 	parsing/str_to_int.c \
 	parsing/textures_parsing.c
+EXECUTION := execution/draw.c \
+	execution/hooks.c \
+	execution/raycasting.c \
+	execution/utils.c
 SRC := main.c \
 	memory_management.c \
 	$(GNL) \
-	$(PARSING)
+	$(PARSING) \
+	$(EXECUTION)
 OBJ := $(SRC:.c=.o)
 
 LIBFT_PATH := libft
@@ -32,7 +37,7 @@ $(NAME): $(OBJ) $(LIBFT) $(LIBMLX)
 	$(CC) -fsanitize=address -g3 $(CFLAGS) $(OBJ) -lm $(LIBFT_LINK) $(LIBMLX_LINK) -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I$(LIBMLX_PATH) -I$(LIBFT_PATH) -IGNL -c $< -o $@
+	$(CC) $(CFLAGS) -I$(LIBMLX_PATH) -I$(LIBFT_PATH) -IGNL -I. -c $< -o $@
 
 $(LIBFT):
 	make -C $(LIBFT_PATH)

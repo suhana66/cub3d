@@ -6,11 +6,11 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:26:33 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 21:27:18 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:26:27 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../cub3d.h"
+#include "cub3d.h"
 
 void	save_map(char **map, t_display *display, char **file_content)
 {

@@ -6,11 +6,11 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 16:07:03 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 20:19:36 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:26:37 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../cub3d.h"
+#include "cub3d.h"
 
 void	parse_input(int argc, char **argv, t_display *display)
 {

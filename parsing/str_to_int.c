@@ -6,11 +6,11 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:25:07 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/10 19:43:19 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:26:45 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../cub3d.h"
+#include "cub3d.h"
 
 int	isoutlimit(long num, char c)
 {
