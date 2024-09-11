@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:26:03 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 12:50:16 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 14:04:08 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,15 @@ void	save_texture(char *str, t_display *display)
 
 int	open_textures(t_display *display)
 {
-	int	w;
-	int	h;
-
-	display->n_xpm = mlx_xpm_file_to_image(display->mlx, display->n_image,
-			&w, &h);
-	display->e_xpm = mlx_xpm_file_to_image(display->mlx, display->e_image,
-			&w, &h);
-	display->w_xpm = mlx_xpm_file_to_image(display->mlx, display->w_image,
-			&w, &h);
-	display->s_xpm = mlx_xpm_file_to_image(display->mlx, display->s_image,
-			&w, &h);
-	if (!display->n_xpm || !display->s_xpm
-		|| !display->e_xpm || !display->w_xpm)
+	display->n_xpm.image = mlx_xpm_file_to_image(display->mlx, display->n_image, &display->n_xpm.w, &display->n_xpm.h);
+	display->e_xpm.image = mlx_xpm_file_to_image(display->mlx, display->e_image, &display->e_xpm.w, &display->e_xpm.h);
+	display->w_xpm.image = mlx_xpm_file_to_image(display->mlx, display->w_image, &display->w_xpm.w, &display->w_xpm.h);
+	display->s_xpm.image = mlx_xpm_file_to_image(display->mlx, display->s_image, &display->s_xpm.w, &display->s_xpm.h);
+	if (!display->n_xpm.image || !display->e_xpm.image || !display->w_xpm.image || !display->s_xpm.image)
 		return (0);
+	display->n_xpm.buffer = mlx_get_data_addr(display->n_xpm.image, &display->n_xpm.bpp, &display->n_xpm.line_length, &display->n_xpm.endian);
+	display->e_xpm.buffer = mlx_get_data_addr(display->e_xpm.image, &display->e_xpm.bpp, &display->e_xpm.line_length, &display->e_xpm.endian);
+	display->w_xpm.buffer = mlx_get_data_addr(display->w_xpm.image, &display->w_xpm.bpp, &display->w_xpm.line_length, &display->w_xpm.endian);
+	display->s_xpm.buffer = mlx_get_data_addr(display->s_xpm.image, &display->s_xpm.bpp, &display->s_xpm.line_length, &display->s_xpm.endian);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 12:58:18 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/11 14:40:52 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 # define WIN_HEIGHT 512
 # define WIN_TITLE "cub3d"
 
-# define CUBE_SIZE 16
+# define CUBE_SIZE 64
 # define FOV 60
-# define SPEED 2
+# define SPEED 8
 
 // general events
 enum
@@ -86,10 +86,10 @@ typedef struct s_display
 	char	*w_image;
 	char	*s_image;
 
-	void	*n_xpm;
-	void	*e_xpm;
-	void	*w_xpm;
-	void	*s_xpm;
+	t_image	n_xpm;
+	t_image	e_xpm;
+	t_image	w_xpm;
+	t_image	s_xpm;
 
 }	t_display;
 
@@ -110,6 +110,7 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
 void	draw_line(t_image *img, int x0, int y0, int x1, int y1, int color);
 void	draw_square(t_image *img, int x, int y, int size, int color);
 void	pixel_put_image(t_image *img, int x, int y, int color);
+int		get_color(t_image *image, int x, int y);
 double	deg_to_rad(double degrees);
 double	normalize_angle(double angle);
 
