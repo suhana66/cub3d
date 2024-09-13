@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:08:14 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 16:30:44 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 09:41:16 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,21 +75,20 @@ int	render_display(t_display *display)
 
 void	set_background(t_image *img, int ceiling, int floor)
 {
-	int	i;
-	int	j;
+	t_point pixel;
 
-	i = 0;
-	while (i < WIN_WIDTH)
+	pixel.x = 0;
+	while (pixel.x < WIN_WIDTH)
 	{
-		j = 0;
-		while (j < WIN_HEIGHT)
+		pixel.y = 0;
+		while (pixel.y < WIN_HEIGHT)
 		{
-			if (j < WIN_HEIGHT / 2)
-				pixel_put_image(img, i, j, ceiling);
+			if (pixel.y < WIN_HEIGHT / 2)
+				pixel_put_image(img, pixel, ceiling);
 			else
-				pixel_put_image(img, i, j, floor);
-			j++;
+				pixel_put_image(img, pixel, floor);
+			pixel.y++;
 		}
-		i++;
+		pixel.x++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 16:30:29 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 10:08:16 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ enum
 	KEY_LEFT = 123,
 	KEY_RIGHT = 124
 };
+
+typedef struct s_point
+{
+	int	x;
+	int	y;
+}	t_point;
 
 typedef struct s_coord
 {
@@ -103,10 +109,10 @@ int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
 
 void	draw_minimap(t_image *img, char **map, t_coord player);
-void	draw_line(t_image *img, int x0, int y0, int x1, int y1, int color);
-void	draw_square(t_image *img, int x, int y, int size, int color);
-void	pixel_put_image(t_image *img, int x, int y, int color);
-int		get_color(t_image *image, int x, int y);
+void	draw_line(t_image *img, t_point a, t_point b, int color);
+void	draw_square(t_image *img, t_point start, int size, int color);
+void	pixel_put_image(t_image *img, t_point pixel, int color);
+int		get_color(t_image *image, t_point pixel);
 
 void	draw_3d_rays(t_display *display);
 double	h_line_check(t_coord player, char **map, int map_height, t_coord *ray);
@@ -116,31 +122,31 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
 double	deg_to_rad(double degrees);
 double	normalize_angle(double angle);
 
-// void	color_to_ascii(int *color, t_info *info, char *str);
+void	color_to_ascii(int *color, t_display *display, char *str);
 void	save_color(char *str, t_display *display, int *error);
 
 char	*custom_trim(char const *s1, char const *set, int side);
 
-// void	store_player(t_info *info, int i, int j);
-// int		well_surrounded(t_info *info, int i, int j);
-// int		is_edge(int i, int j, t_info *info);
-// int		is_wall(int i, int j, t_info *info);
+void	store_player(t_display *display, int i, int j);
+int		well_surrounded(t_display *display, int i, int j);
+int		is_edge(int i, int j, t_display *display);
+int		is_wall(int i, int j, t_display *display);
 int		valid_line(t_display *display, int i);
 
 void	save_map(char **map, t_display *display, char **file_content);
 void	validate_map(t_display *display);
 
 void	parse_input(int argc, char **argv, t_display *display);
-// char	**store_info(char *filename, int lines_count);
-// int		count_lines(int fd);
+char	**store_info(char *filename, int lines_count);
+int		count_lines(int fd);
 char	**read_file(char *file_name);
 
-// bool	complete_elements(t_info *info);
-// void	save_element(char *str, t_info *info, char **file_content);
-// void	print_info(t_info *info);
+int		complete_elements(t_display *display);
+void	save_element(char *str, t_display *display, char **file_content);
+void	print_info(t_display *display);
 void	store_validate(char **file_content, t_display *display);
 
-// int		isoutlimit(long num, char c);
+int		isoutlimit(long num, char c);
 int		str_to_int(const char *str, int *error);
 
 void	save_texture(char *str, t_display *display);

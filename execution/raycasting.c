@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:24:39 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 16:24:48 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 09:42:30 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ void	draw_3d_rays(t_display *display)
 		i = 0;
 		while (i < line_height)
 		{
-			pixel_put_image(&display->img, r, line_offset + i,
-				get_color(&cur_img, x_image, y_image));
+			pixel_put_image(&display->img, (t_point){r, line_offset + i},
+				get_color(&cur_img, (t_point){x_image, y_image}));
 			y_image += y_step;
 			i++;
 		}
