@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:24:39 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 12:11:12 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 13:01:41 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ void	draw_column(t_image *img, double dist, int r, int x_image, t_image cur_img)
 	int		i;
 
 	line_height = CUBE_SIZE * WIN_HEIGHT / dist;
-	if (line_height > WIN_HEIGHT)
-		line_height = WIN_HEIGHT;
 	line_offset = WIN_HEIGHT / 2 - line_height / 2;
 	y_image = 0;
 	y_step = (double)cur_img.h / line_height;
