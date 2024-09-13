@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 10:08:16 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 10:28:44 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	set_background(t_image *img, int ceiling, int floor);
 void	quit_display(t_display *display);
 int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
+void	update_player_angle(t_coord *player, double new_angle);
 
 void	draw_minimap(t_image *img, char **map, t_coord player);
 void	draw_line(t_image *img, t_point a, t_point b, int color);

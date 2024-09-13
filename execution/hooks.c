@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:11:48 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/11 16:20:10 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 10:29:17 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,34 +22,22 @@ int	key_hook(int key, t_display *display)
 	if (key == KEY_ESC)
 		quit_display(display);
 	if (key == KEY_LEFT)
-	{
-		display->player.a = normalize_angle(display->player.a + 5);
-		display->player.dx = cos(deg_to_rad(display->player.a));
-		display->player.dy = -sin(deg_to_rad(display->player.a));
-	}
+		update_player_angle(&display->player, display->player.a + 5);
 	if (key == KEY_RIGHT)
-	{
-		display->player.a = normalize_angle(display->player.a - 5);
-		display->player.dx = cos(deg_to_rad(display->player.a));
-		display->player.dy = -sin(deg_to_rad(display->player.a));
-	}
-	if (key == KEY_W
-		&& update_xy(display,
+		update_player_angle(&display->player, display->player.a - 5);
+	if (key == KEY_W && update_xy(display,
 			display->player.x + display->player.dx * SPEED,
 			display->player.y + display->player.dy * SPEED))
 		return (1);
-	if (key == KEY_S
-		&& update_xy(display,
+	if (key == KEY_S && update_xy(display,
 			display->player.x - display->player.dx * SPEED,
 			display->player.y - display->player.dy * SPEED))
 		return (1);
-	if (key == KEY_A
-		&& update_xy(display,
+	if (key == KEY_A && update_xy(display,
 			display->player.x + display->player.dy * SPEED,
 			display->player.y - display->player.dx * SPEED))
 		return (1);
-	if (key == KEY_D
-		&& update_xy(display,
+	if (key == KEY_D && update_xy(display,
 			display->player.x - display->player.dy * SPEED,
 			display->player.y + display->player.dx * SPEED))
 		return (1);
@@ -75,4 +63,11 @@ int	update_xy(t_display *display, double new_x, double new_y)
 		return (0);
 	}
 	return (1);
+}
+
+void	update_player_angle(t_coord *player, double new_angle)
+{
+	player->a = normalize_angle(new_angle);
+	player->dx = cos(deg_to_rad(player->a));
+	player->dy = -sin(deg_to_rad(player->a));
 }

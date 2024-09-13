@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 15:53:38 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:22 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 10:36:26 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ void	store_player(t_display *display, int i, int j)
 		display->player.a = 270;
 	if (display->map[i][j] == 'W')
 		display->player.a = 180;
-	display->player.dx = cos(deg_to_rad(display->player.a));
-	display->player.dy = -sin(deg_to_rad(display->player.a));
+	update_player_angle(&display->player, display->player.a);
 }
 
 int	well_surrounded(t_display *display, int i, int j)
