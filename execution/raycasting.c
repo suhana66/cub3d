@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:24:39 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 11:35:36 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 12:20:39 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,8 @@ void	draw_3d_rays(t_display *display)
 	double	v_y;
 	double	dist_v;
 	double	dist_h;
-
 	t_image	cur_img;
 	int		x_image;
-	double	y_image;
-	double	y_step;
-
-	int		line_height;
-	int		line_offset;
-
-	int		i;
 
 	ray.a = normalize_angle(display->player.a + FOV / 2.0);
 	r = 0;
@@ -36,31 +28,14 @@ void	draw_3d_rays(t_display *display)
 	{
 		dist_v = v_line_check(display->player, display->map, display->map_height, &ray);
 		v_y = ray.y;
-
 		dist_h = h_line_check(display->player, display->map, display->map_height, &ray);
 		cur_img = get_image(display, ray.a, dist_v, dist_h);
 		if (dist_v < dist_h)
 			x_image = (double)((int)v_y % CUBE_SIZE) / CUBE_SIZE * cur_img.w;
 		else
 			x_image = (double)((int)ray.x % CUBE_SIZE) / CUBE_SIZE * cur_img.w;
-		y_image = 0;
-		// draw_line(display, display->player.x, display->player.y, ray.x, ray.y, 0xFF0000);
-
 		dist_h = fmin(dist_h, dist_v) * cos(deg_to_rad(normalize_angle(display->player.a - ray.a)));
-		line_height = CUBE_SIZE * WIN_HEIGHT / dist_h;
-		if (line_height > WIN_HEIGHT)
-			line_height = WIN_HEIGHT;
-		line_offset = WIN_HEIGHT / 2 - line_height / 2;
-
-		y_step = (double)cur_img.h / line_height;
-		i = 0;
-		while (i < line_height)
-		{
-			pixel_put_image(&display->img, (t_point){r, line_offset + i},
-				get_color(&cur_img, (t_point){x_image, y_image}));
-			y_image += y_step;
-			i++;
-		}
+		draw_column(&display->img, dist_h, r, x_image, cur_img);
 		ray.a = normalize_angle(ray.a - (double)FOV / WIN_WIDTH);
 		r++;
 	}
@@ -80,7 +55,31 @@ t_image	get_image(t_display *display, double ray_angle, double dist_v, double di
 		if (sin(deg_to_rad(ray_angle)) > 0.001)
 			return (display->n_xpm);
 		else
-			return(display->s_xpm);
+			return (display->s_xpm);
+	}
+}
+
+void	draw_column(t_image *img, double dist, int r, int x_image, t_image cur_img)
+{
+	int		line_height;
+	int		line_offset;
+	double	y_image;
+	double	y_step;
+	int		i;
+
+	line_height = CUBE_SIZE * WIN_HEIGHT / dist;
+	if (line_height > WIN_HEIGHT)
+		line_height = WIN_HEIGHT;
+	line_offset = WIN_HEIGHT / 2 - line_height / 2;
+	y_image = 0;
+	y_step = (double)cur_img.h / line_height;
+	i = 0;
+	while (i < line_height)
+	{
+		pixel_put_image(img, (t_point){r, line_offset + i},
+			get_color(&cur_img, (t_point){x_image, y_image}));
+		y_image += y_step;
+		i++;
 	}
 }
 
@@ -153,4 +152,3 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray)
 	}
 	return (INFINITY);
 }
-

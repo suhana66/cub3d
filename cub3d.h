@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 11:21:31 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/13 12:20:51 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ int		get_color(t_image *image, t_point pixel);
 
 void	draw_3d_rays(t_display *display);
 t_image	get_image(t_display *display, double ray_angle, double dist_v, double dist_h);
+void	draw_column(t_image *img, double dist, int r, int x_image, t_image cur_img);
 double	h_line_check(t_coord player, char **map, int map_height, t_coord *ray);
 double	v_line_check(t_coord player, char **map, int m_height, t_coord *ray);
 double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
