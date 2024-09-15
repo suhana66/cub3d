@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:18:17 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 12:14:54 by mafaisal         ###   ########.fr       */
+/*   Updated: 2024/09/15 12:19:36 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,8 @@ void	pixel_put_image(t_image *img, t_point pixel, int color)
 {
 	char	*dst;
 
-	if (pixel.x < 0 || pixel.x > WIN_WIDTH || pixel.y < 0 || pixel.y > WIN_HEIGHT)
+	if (pixel.x < 0 || pixel.x >= WIN_WIDTH
+		|| pixel.y < 0 || pixel.y >= WIN_HEIGHT)
 		return ;
 	dst = img->buff + (pixel.y * img->l_len + pixel.x * (img->bpp / 8));
 	*(unsigned int *)dst = color;

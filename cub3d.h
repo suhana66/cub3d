@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/15 11:49:11 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/15 12:20:30 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ void	pixel_put_image(t_image *img, t_point pixel, int color);
 int		get_color(t_image *image, t_point pixel);
 
 void	draw_3d_rays(t_display *display);
-double	get_wall_height(t_display *display, double ray_angle, double *x_image, t_image *cur_img);
+double	get_wall_height(t_display *display, double ray_angle, double *x_image,
+			t_image *cur_img);
 double	v_line_check(t_display *display, t_coord *ray);
 double	h_line_check(t_display *display, t_coord *ray);
 double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
