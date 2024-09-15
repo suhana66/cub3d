@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 16:07:03 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:37 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/15 16:32:40 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	parse_input(int argc, char **argv, t_display *display)
 
 	if (argc != 2 || !ft_strrchr(argv[1], '.')
 		||ft_strncmp(".cub", ft_strrchr(argv[1], '.'), 5))
-		(free_exit("argument should be a.cub file", NULL, 1));
+		(free_exit("Argument should be a.cub file", NULL, 1));
 	file_content = read_file(argv[1]);
 	store_validate(file_content, display);
 }

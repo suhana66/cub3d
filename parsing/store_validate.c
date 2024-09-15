@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 14:44:24 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:40 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/15 16:29:25 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	save_element(char *str, t_display *display, char **file_content)
 	else
 		(free_array(file_content), free_exit("Invalid elements", display, 1));
 	if (error)
-		(free_array(file_content), free_exit("Invalid Color format",
+		(free_array(file_content), free_exit("Invalid color format",
 				display, 1));
 }
 

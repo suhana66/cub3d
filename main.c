@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:08:14 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 10:47:24 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/15 16:32:15 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,20 @@ int	mlx_setup(t_display *display)
 {
 	display->mlx = mlx_init();
 	if (!display->mlx)
-		free_exit("Error: Failed to initialize MLX", display, 1);
+		free_exit("Failed to initialize MLX", display, 1);
 	display->win = mlx_new_window(display->mlx, WIN_WIDTH, WIN_HEIGHT,
 			WIN_TITLE);
 	if (!display->win)
-		free_exit("Error: Failed to create window", display, 2);
+		free_exit("Failed to create window", display, 2);
 	display->img.image = mlx_new_image(display->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!display->img.image)
-		free_exit("Error: Failed to create image", display, 3);
+		free_exit("Failed to create image", display, 3);
 	display->img.buff = mlx_get_data_addr(display->img.image,
 			&display->img.bpp, &display->img.l_len, &display->img.endian);
 	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
 	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
 	if (!open_textures(display))
-		free_exit("Error: Failed to open textures", display, 4);
+		free_exit("Failed to open textures", display, 4);
 	return (0);
 }
 
