@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:24:39 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/15 12:12:10 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/15 13:25:51 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ double	get_wall_height(t_display *display, double ray_angle, double *xpm_x,
 	dist_v = v_line_check(display, &ray);
 	v_y = ray.y;
 	dist_h = h_line_check(display, &ray);
-	if (dist_v < dist_h)
+	if (dist_v <= dist_h)
 	{
 		*cur_img = display->e_xpm;
 		if (cos(deg_to_rad(ray_angle)) < -0.001)

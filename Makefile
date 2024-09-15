@@ -46,12 +46,11 @@ $(LIBMLX):
 	make -C $(LIBMLX_PATH)
 
 clean:
-	make clean -C $(LIBFT_PATH)
+	make fclean -C $(LIBFT_PATH)
+	make clean -C $(LIBMLX_PATH)
 	rm -f $(OBJ)
 
 fclean: clean
-	make clean -C $(LIBMLX_PATH)
-	make fclean -C $(LIBFT_PATH)
 	rm -f $(NAME)
 
 re: fclean all
