@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   store_validate.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 14:44:24 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/15 16:29:25 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 14:04:36 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,14 @@ void	save_element(char *str, t_display *display, char **file_content)
 	while (str[i] == ' ')
 		i++;
 	if (str[i]
-		&& (!ft_strncmp(str + i, "NO ", 3) || !ft_strncmp(str + i, "SO ", 3)
-			|| !ft_strncmp(str + i, "EA ", 3)
-			|| !ft_strncmp(str + i, "WE ", 3)))
+		&& ((!ft_strncmp(str + i, "NO ", 3) && !display->n_image)
+			|| (!ft_strncmp(str + i, "SO ", 3) && !display->s_image)
+			|| (!ft_strncmp(str + i, "EA ", 3) && !display->e_image)
+			|| (!ft_strncmp(str + i, "WE ", 3) && !display->w_image)))
 		save_texture(str + i, display);
 	else if (str[i]
-		&& (!ft_strncmp(str + i, "F ", 2) || !ft_strncmp(str + i, "C ", 2)))
+		&& ((!ft_strncmp(str + i, "F ", 2) && display->f < 0)
+			|| (!ft_strncmp(str + i, "C ", 2) && display->c < 0)))
 		save_color(str + i, display, &error);
 	else
 		(free_array(file_content), free_exit("Invalid elements", display, 1));
@@ -52,12 +54,15 @@ void	print_info(t_display *display)
 	int	i;
 
 	printf("\n========Structure Elements=======\n\n");
-	printf("c : %d, f: %d\n\n", display->c, display->f);
+	printf("c : %d,%d,%d\n", display->c >> 16,
+		display->c >> 8 & 255, display->c & 255);
+	printf("f : %d,%d,%d\n\n", display->f >> 16,
+		display->f >> 8 & 255, display->f & 255);
 	printf("NO: %s\n", display->n_image);
 	printf("EA: %s\n", display->e_image);
 	printf("SO: %s\n", display->s_image);
 	printf("WE: %s\n\n", display->w_image);
-	printf("Height: %d\n", display->map_height);
+	printf("Height: %d\n\n", display->map_height);
 	i = 0;
 	while (display->map[i])
 		printf("%s\n", display->map[i++]);

@@ -1,9 +1,9 @@
 NO textures/brick.xpm
-SO textures/greystone.xpm
 WE textures/planks.xpm
+SO textures/greystone.xpm
 EA textures/wall.xpm
 
-F 89,45,65
+F 89,45,253
 C 159,210,255
 
         1111111111111111111111111

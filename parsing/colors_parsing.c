@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   colors_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:25:35 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:16 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 13:44:50 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	color_to_ascii(int *color, t_display *display, char *str)
 		display->f |= color[1] << 8;
 		display->f |= color[2];
 	}
-	printf("%c color: (%d)(%d)(%d)\n", *str, color[0], color[1], color[2]);
 }
 
 void	save_color(char *str, t_display *display, int *error)
