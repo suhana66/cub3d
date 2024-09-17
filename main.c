@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:08:14 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 12:08:38 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 14:59:54 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ int	render_display(t_display *display)
 	mlx_clear_window(display->mlx, display->win);
 	set_background(&display->img, display->c, display->f);
 	draw_3d_rays(display);
-	draw_minimap(&display->img, display->map, display->player);
 	mlx_put_image_to_window(display->mlx, display->win,
 		display->img.image, 0, 0);
 	return (0);

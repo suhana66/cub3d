@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 12:35:13 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 15:01:07 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,6 @@ int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
 void	update_player_angle(t_coord *player, double new_angle);
 
-void	draw_minimap(t_image *img, char **map, t_coord player);
-void	draw_line(t_image *img, t_point a, t_point b, int color);
-void	draw_square(t_image *img, t_point start, int size, int color);
-void	pixel_put_image(t_image *img, t_point pixel, int color);
-int		get_color(t_image *image, t_point pixel);
-
 void	draw_3d_rays(t_display *display);
 double	get_wall_height(t_display *display, double ray_angle, double *x_image,
 			t_image *cur_img);
@@ -124,6 +118,8 @@ double	calc_dist(t_coord player, char **map, int map_height, t_coord *ray);
 
 double	deg_to_rad(double degrees);
 double	normalize_angle(double angle);
+void	pixel_put_image(t_image *img, t_point pixel, int color);
+int		get_color(t_image *image, t_point pixel);
 
 void	color_to_ascii(int *color, t_display *display, char *str);
 void	save_color(char *str, t_display *display, int *error);

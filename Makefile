@@ -1,6 +1,6 @@
 NAME := cub3D
 CC := cc
-CFLAGS := -Wall -Wextra -Werror -Wfatal-errors
+CFLAGS := -Wall -Wextra -Werror
 
 GNL := GNL/get_next_line.c \
 	GNL/get_next_line_utils.c
@@ -12,8 +12,7 @@ PARSING := parsing/colors_parsing.c \
 	parsing/store_validate.c \
 	parsing/str_to_int.c \
 	parsing/textures_parsing.c
-EXECUTION := execution/draw.c \
-	execution/hooks.c \
+EXECUTION := execution/hooks.c \
 	execution/raycasting.c \
 	execution/utils.c
 SRC := main.c \
