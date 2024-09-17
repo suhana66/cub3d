@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:26:33 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/11 16:26:27 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 15:34:00 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	save_map(char **map, t_display *display, char **file_content)
 	while (map[i] && is_allspaces(map[i]))
 		i++;
 	if (map[i])
-		(free_array(file_content), free_exit("Empty line", display, 1));
+		(free_array(file_content), free_exit("Invalid line", display, 1));
 	display->map = malloc (sizeof(char *) * (display->map_height + 1));
 	if (!display->map)
 		(free_array(file_content), free_exit("Malloc error", display, 1));
