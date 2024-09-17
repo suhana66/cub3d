@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:28:32 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/15 16:31:40 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 11:45:10 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	free_exit(char *str, t_display *display, int exit_code)
 	if (str && exit_code)
 	{
 		ft_putendl_fd("Error", 2);
-		ft_putendl_fd(str, 2);	
+		ft_putendl_fd(str, 2);
 	}
 	if (!display)
 		exit(exit_code);
