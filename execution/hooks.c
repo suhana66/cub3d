@@ -6,15 +6,16 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:11:48 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/13 10:29:17 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 12:34:56 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	quit_display(t_display *display)
+int	quit_display(t_display *display)
 {
 	free_exit(NULL, display, 0);
+	return (0);
 }
 
 int	key_hook(int key, t_display *display)

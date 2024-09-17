@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:18:17 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/15 12:19:36 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 12:47:47 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,23 +85,22 @@ void	draw_line(t_image *img, t_point a, t_point b, int color)
 
 	delta.x = abs(b.x - a.x);
 	delta.y = abs(b.y - a.y);
-	if (a.x < b.x)
-		step.x = 1;
-	else
-		step.x = -1;
-	if (a.y < b.y)
-		step.y = 1;
-	else
-		step.y = -1;
+	step.x = (b.x > a.x) - (b.x < a.x);
+	step.y = (b.y > a.y) - (b.y < a.y);
 	err = delta.x - delta.y;
-	while (1)
+	while ((pixel_put_image(img, a, color), 1) && (a.x != b.x || a.y != b.y))
 	{
-		pixel_put_image(img, a, color);
-		if (a.x == b.x && a.y == b.y)
-			break ;
 		e2 = 2 * err;
-		(e2 > -delta.y) && (err -= delta.y, a.x += step.x);
-		(e2 < delta.x) && (err += delta.x, a.y += step.y);
+		if (e2 > -delta.y)
+		{
+			err -= delta.y;
+			a.x += step.x;
+		}
+		if (e2 < delta.x)
+		{
+			err += delta.x;
+			a.y += step.y;
+		}
 	}
 }
 

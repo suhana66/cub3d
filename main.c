@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:08:14 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 11:42:41 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 12:08:38 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	init_info(t_display *display)
 	display->e_image = NULL;
 	display->s_image = NULL;
 	display->w_image = NULL;
-    display->n_xpm.image = NULL;
+	display->n_xpm.image = NULL;
 	display->e_xpm.image = NULL;
 	display->s_xpm.image = NULL;
 	display->w_xpm.image = NULL;
@@ -59,7 +59,7 @@ int	mlx_setup(t_display *display)
 		free_exit("Failed to create image", display, 3);
 	display->img.buff = mlx_get_data_addr(display->img.image,
 			&display->img.bpp, &display->img.l_len, &display->img.endian);
-	mlx_hook(display->win, ON_DESTROY, 0, (int (*)())quit_display, display);
+	mlx_hook(display->win, ON_DESTROY, 0, quit_display, display);
 	mlx_hook(display->win, ON_KEYDOWN, 0, key_hook, display);
 	if (!open_textures(display))
 		free_exit("Failed to open textures", display, 4);

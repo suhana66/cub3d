@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/15 12:20:30 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 12:35:13 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int		mlx_setup(t_display *display);
 int		render_display(t_display *display);
 void	set_background(t_image *img, int ceiling, int floor);
 
-void	quit_display(t_display *display);
+int		quit_display(t_display *display);
 int		key_hook(int key, t_display *display);
 int		update_xy(t_display *display, double new_x, double new_y);
 void	update_player_angle(t_coord *player, double new_angle);
@@ -157,6 +157,7 @@ int		open_textures(t_display *display);
 
 void	free_clear(char *str);
 void	free_array(char **array);
+void	destroy_images(t_display *display);
 void	free_exit(char *str, t_display *display, int exit_code);
 
 #endif
