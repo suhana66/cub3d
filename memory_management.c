@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory_management.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:28:32 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/17 11:49:10 by mafaisal         ###   ########.fr       */
+/*   Updated: 2024/09/17 11:52:40 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void	destroy_images(t_display *display)
 		mlx_destroy_image(display->mlx, display->w_xpm.image);
 	if (display->s_xpm.image)
 		mlx_destroy_image(display->mlx, display->s_xpm.image);
-	
 }
+
 void	free_exit(char *str, t_display *display, int exit_code)
 {
 	if (str && exit_code)

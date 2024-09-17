@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:08:14 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 11:42:41 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 11:51:48 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	init_info(t_display *display)
 	display->e_image = NULL;
 	display->s_image = NULL;
 	display->w_image = NULL;
-    display->n_xpm.image = NULL;
+	display->n_xpm.image = NULL;
 	display->e_xpm.image = NULL;
 	display->s_xpm.image = NULL;
 	display->w_xpm.image = NULL;
