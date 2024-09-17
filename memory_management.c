@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory_management.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:28:32 by mafaisal          #+#    #+#             */
-/*   Updated: 2024/09/15 16:31:40 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 11:40:00 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,20 @@ void	free_array(char **array)
 	array = NULL;
 }
 
+void	destroy_images(t_display *display)
+{
+	if (display->img.image)
+		mlx_destroy_image(display->mlx, display->img.image);
+	if (display->n_xpm.image)
+		mlx_destroy_image(display->mlx, display->n_xpm.image);
+	if (display->e_xpm.image)
+		mlx_destroy_image(display->mlx, display->e_xpm.image);
+	if (display->w_xpm.image)
+		mlx_destroy_image(display->mlx, display->w_xpm.image);
+	if (display->s_xpm.image)
+		mlx_destroy_image(display->mlx, display->s_xpm.image);
+	
+}
 void	free_exit(char *str, t_display *display, int exit_code)
 {
 	if (str && exit_code)
@@ -48,8 +62,7 @@ void	free_exit(char *str, t_display *display, int exit_code)
 		free_clear(display->w_image);
 	if (display->s_image)
 		free_clear(display->s_image);
-	if (display->img.image)
-		mlx_destroy_image(display->mlx, display->img.image);
+	destroy_images(display);
 	if (display->win)
 		mlx_destroy_window(display->mlx, display->win);
 	free(display->mlx);
