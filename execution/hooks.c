@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:11:48 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 12:34:56 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 15:23:24 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,29 @@ int	update_xy(t_display *display, double new_x, double new_y)
 {
 	int	map_x;
 	int	map_y;
+	int	i;
+	int	j;
 
-	map_x = (int)new_x / CUBE_SIZE;
-	map_y = (int)new_y / CUBE_SIZE;
-	if (map_x >= 0 && map_y >= 0
-		&& map_y < display->map_height
-		&& map_x < (int)ft_strlen(display->map[map_y])
-		&& (display->map[map_y][map_x] == '0'
-		|| ft_strchr("NESW", display->map[map_y][map_x])))
+	i = -PLAYER_SIZE / 2;
+	while (i <= PLAYER_SIZE / 2)
 	{
-		display->player.x = new_x;
-		display->player.y = new_y;
-		return (0);
+		j = -PLAYER_SIZE / 2;
+		while (j <= PLAYER_SIZE / 2)
+		{
+			map_x = (int)(new_x + i) / CUBE_SIZE;
+			map_y = (int)(new_y + j) / CUBE_SIZE;
+			if (map_x < 0 || map_y < 0 || map_y >= display->map_height
+				|| map_x >= (int)ft_strlen(display->map[map_y])
+				|| (display->map[map_y][map_x] != '0'
+				&& !ft_strchr("NESW", display->map[map_y][map_x])))
+				return (1);
+			j += PLAYER_SIZE / 2;
+		}
+		i += PLAYER_SIZE / 2;
 	}
-	return (1);
+	display->player.x = new_x;
+	display->player.y = new_y;
+	return (0);
 }
 
 void	update_player_angle(t_coord *player, double new_angle)

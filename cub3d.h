@@ -6,7 +6,7 @@
 /*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 15:01:07 by susajid          ###   ########.fr       */
+/*   Updated: 2024/09/17 15:24:36 by susajid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # define WIN_TITLE "cub3d"
 
 # define CUBE_SIZE 64
+# define PLAYER_SIZE 8
 # define FOV 60
 # define SPEED 8
 
