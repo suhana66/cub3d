@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: susajid <susajid@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: mafaisal <mafaisal@student.42abudhabi.a    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/05 10:20:47 by susajid           #+#    #+#             */
-/*   Updated: 2024/09/17 15:24:36 by susajid          ###   ########.fr       */
+/*   Updated: 2024/10/14 13:25:50 by mafaisal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 # define WIN_HEIGHT 512
 # define WIN_TITLE "cub3d"
 
-# define CUBE_SIZE 64
+# define CUBE_SIZE 256
 # define PLAYER_SIZE 8
 # define FOV 60
-# define SPEED 8
+# define SPEED 16
 
 // general events
 enum

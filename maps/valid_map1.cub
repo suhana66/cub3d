@@ -1,10 +1,10 @@
-NO textures/brick.xpm
-WE textures/planks.xpm
-SO textures/greystone.xpm
-EA textures/wall.xpm
+NO textures/blue_and_white.xpm
+WE textures/white_wall.xpm
+SO textures/calm_blue.xpm
+EA textures/white_wall2.xpm
 
-F 89,45,253
-C 159,210,255
+C 255,255,240
+F 190,216,214
 
         1111111111111111111111111
         1000000000110000000000001
